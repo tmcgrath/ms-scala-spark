@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.2" name="generator" />
+<title>Connecting Spark to Cassandra</title>
+<link href="deck.js/themes/style/font.css" rel="stylesheet" />
+<style>
+.conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 1.2em; height: 1.2em; font-size: 0.9em; font-weight: bold; line-height: 1.2; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -0.1em; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+.colist table td:first-of-type { padding-right: 0.25em; }
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{font-weight: normal}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#00}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/datastax.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Connecting Spark to Cassandra</h1>
+</section>
+<section class="slide" id="spark-spark-cassandra-connector-cassandra-retrieve-data">
+<h2>Cassandra as a Data Source for Spark</h2>
+<div class="paragraph"><p><strong>Example Cassandra table from the KillrVideo domain</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector/cassandra-retrieve-data/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>CREATE TABLE movies_by_actor (
+  actor TEXT,
+  release_year INT,
+  movie_id UUID,
+  title TEXT,
+  genres SET&lt;TEXT&gt;,
+  rating FLOAT,
+  PRIMARY KEY ((actor), release_year, movie_id)
+) WITH CLUSTERING ORDER BY (release_year DESC, movie_id ASC);</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>We present how to use Cassandra as a data source for Spark in the context of our
+KillrVideo database. Here is table <em>movies_by_actor</em> with partition key <em>actor</em>
+and clustering columns <em>release_year</em> and <em>movie_id</em>. Each partition in this table
+may store many rows representing all movies with a particular actor, such as Johnny Depp.
+There is a specific clustering order defined for this table.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="the-challenge">
+<h2>The Challenge</h2>
+<div class="paragraph"><p><strong>Retrieve five most recent movies featuring Johnny Depp that were released after 2010</strong></p></div>
+<div class="listingblock">
+<div class="title"><em>CQL solution</em></div>
+<div class="content">
+<pre class="CodeRay"><code>SELECT title, release_year
+FROM movies_by_actor
+WHERE actor = 'Johnny Depp' AND release_year &gt; 2010
+ORDER BY release_year DESC
+LIMIT 5;</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="paragraph"><p><strong>How can you express this logic using <em>Spark-Cassandra Connector</em> API?</strong></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Our challenge is to retrieve information about five most recent movies that were
+released after 2010 and had Johnny Depp as an actor.
+Moreover, for the result, we are only interested in movie titles
+and release years that should be displayed in descending order of release years.</p></div>
+<div class="paragraph"><p>Since this is a data retrieval problem, we can readily express the query using
+Cassandra Query Language (CQL). However, our goal here is to express the same query using
+<em>Spark-Cassandra Connector</em> API, such that data becomes available in Spark as an RDD
+that can be used in further data processing or analysis.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-cassandra-connector-api">
+<h2>Spark-Cassandra Connector API</h2>
+<div class="paragraph"><p><strong>Common methods for data retrieval</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">API Call</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>cassandraTable</strong>(<em>keyspace</em>, <em>table</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns an RDD that contains all rows from a Cassandra <em>table</em> in a specified <em>keyspace</em>.
+This method is called on a <em>SparkContext</em> object.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>select</strong>(<em>columns</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optionally used with <em>cassandraTable</em>() to specify which table <em>columns</em> to retain in the result.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>where</strong>(<em>condition</em>,[<em>parameters</em>])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optionally used with <em>cassandraTable</em>() to specify a CQL <em>condition</em> to only retrieve
+rows that satisfy the <em>condition</em>. The <em>condition</em> may optionally be parameterized.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>withAscOrder</strong> or
+<strong>withDescOrder</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optionally used with <em>cassandraTable</em>() to specify how to order retrieved rows from a single Cassandra partition
+based on clustering columns.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>limit</strong>(<em>n</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optionally used with <em>cassandraTable</em>() to specify how many rows to retrieve.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>To achieve our goal, we need to learn about <em>Spark-Cassandra Connector</em> API for data retrieval.</p></div>
+<div class="paragraph"><p>The most important method that should be called on a <em>SparkContext</em> object is <em>cassandraTable</em>.
+It returns a Cassandra RDD with objects of type <em>CassandraRow</em> that correspond to all rows
+from a given Cassandra <em>table</em> in a specified <em>keyspace</em>.</p></div>
+<div class="paragraph"><p>The other API calls are optionally used together with <em>cassandraTable</em> to refine the result.</p></div>
+<div class="paragraph"><p><em>select</em> allows selecting only desired <em>columns</em> from a table.</p></div>
+<div class="paragraph"><p><em>where</em> allows specifying a CQL condition that is used to filter rows.</p></div>
+<div class="paragraph"><p><em>withAscOrder</em> or <em>withDescOrder</em> allow ordering rows in a multi-row partition based on
+clustering columns.</p></div>
+<div class="paragraph"><p>Finally, <em>limit</em> allows specifying a desired number of rows to retrieve.</p></div>
+<div class="paragraph"><p>Similarly to RDD transformations, all of these methods are evaluated lazily.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="mapping-spark-cassandra-connector-api-to-cql">
+<h2>Mapping Spark-Cassandra Connector API to CQL</h2>
+<div class="paragraph"><p><strong>As simple as it can be &#8230;&#8203;</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>select(columns)                    --&gt;    SELECT columns
+cassandraTable(keyspace, table)    --&gt;    FROM keyspace.table
+where(condition, [parameters])     --&gt;    WHERE condition
+withAscOrder | withDescOrder       --&gt;    ORDER BY clustering_columns ASC | DESC
+limit(n)                           --&gt;    LIMIT n</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>It is helpful to see which API calls correspond to which CQL query clauses.
+If you are familiar with CQL, <em>Spark-Cassandra Connector</em> API should look familiar, too.</p></div>
+<div class="paragraph"><p>Indeed, internally, <em>Spark-Cassandra Connector</em> translates API calls into CQL queries.
+The exact translation is, of course, more complex than what is shown in this slide.
+The additional complexity comes from the fact that results have to be returned as an RDD,
+which is a distributed dataset containing Spark partitions. Intelligent mapping of data
+from Cassandra partitions to Spark partitions requires some additional logic.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="our-challenge-solution">
+<h2>Our Challenge Solution</h2>
+<div class="paragraph"><p><strong>Retrieve 5 most recent movies featuring Johnny Depp that were released after 2010</strong></p></div>
+<div class="listingblock">
+<div class="title"><em>Solution</em></div>
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .select("title","release_year")
+  .where("actor = 'Johnny Depp' AND release_year &gt; 2010")
+  .withDescOrder
+  .limit(5)
+  .collect
+  .foreach(println)</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Results</em></div>
+<div class="content">
+<pre class="CodeRay"><code>CassandraRow{title: Pirates of the Caribbean: Dead Men Tell No Tales, release_year: 2017}
+CassandraRow{title: Alice Through the Looking Glass, release_year: 2016}
+CassandraRow{title: Black Mass, release_year: 2015}
+CassandraRow{title: Yoga Hosers, release_year: 2015}
+CassandraRow{title: Mortdecai, release_year: 2015}</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>I am sure you know how to solve our challenge now!</p></div>
+<div class="paragraph"><p>Here we are using <em>Spark-Cassandra Connector</em> API to retrieve rows from table <em>movies_by_actor</em>.
+We are selecting columns <em>title</em> and <em>release_year</em>,
+filtering based on columns <em>actor</em> and <em>release_year</em>,
+using descending order, and limiting the result to 5 rows.
+We are then using Spark action <em>collect</em> on the resulting RDD and printing the resulting rows.</p></div>
+<div class="paragraph"><p>This solution is very efficient. It pushes all data retrieval logic to Cassandra, which
+only hands five rows to Spark.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Correct but NOT efficient solution</strong></p></div>
+<div class="listingblock">
+<div class="title"><em>How not to retrieve data from Cassandra</em></div>
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .filter(row =&gt; row.getString("actor") == "Johnny Depp")
+  .map(row =&gt; (row.getInt("release_year"), row.getString("title")))
+  .sortByKey(false)
+  .take(5)
+  .foreach(println)</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph"><p>This is not an efficient way to retrieve data from Cassandra!</p></div>
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>For educational purposes only, we are also showing an alternative solution to our
+challenge that is much less efficient than the first one. This is how NOT to retrieve
+data from Cassandra!</p></div>
+<div class="paragraph"><p>Here we are only using method <em>cassandraTable</em> for data retrieval. All rows from table
+<em>movies_by_actors</em> are transferred to Spark and post-processed with transformations <em>filter</em>,
+<em>map</em>, <em>sortByKey</em>, and action <em>take</em>.</p></div>
+<div class="paragraph"><p>Indeed, we are getting the same five rows in the result but at what cost? Instead of
+pushing data retrieval logic to Cassandra, this solution hands a large dataset
+to Spark and relies on transformations and actions to get the desired five rows.</p></div>
+<div class="paragraph"><p>Remember that, for efficiency, you should always push as much data retrieval logic to Cassandra as possible.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-spark-cassandra-connector-cassandra-process-data">
+<h2>Retrieving Data from a Cassandra Table</h2>
+<div class="paragraph"><p><strong>Example Cassandra table from the KillrVideo domain</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector/cassandra-process-data/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>val movies = sc.cassandraTable("killr_video","movies_by_actor")
+               .where("actor = 'Johnny Depp'")
+
+// movies: com.datastax.spark.connector.rdd.CassandraTableScanRDD[
+//                      com.datastax.spark.connector.CassandraRow]</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>We present how to access data retrieved from a Cassandra table in the context of our
+KillrVideo database. Here is table <em>movies_by_actor</em> with partition key <em>actor</em>
+and clustering columns <em>release_year</em> and <em>movie_id</em>.
+To begin with, we create Cassandra RDD <em>movies</em> by retrieving data from table <em>movies_by_actor</em>.
+In particular, we retrieve all rows from a single partition with partition key "Johnny Depp".
+Notice that our resulting RDD contains objects of type <em>CassandraRow</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="the-challenge-2">
+<h2>The Challenge</h2>
+<div class="paragraph"><p><strong>Processing CassandraRow objects in a Cassandra RDD</strong></p></div>
+<div class="ulist">
+<ul>
+<li><strong>Problem 1</strong>: Output all movies with word "pirate" in their titles</li>
+<li><strong>Problem 2</strong>: Output all movies with genre "Adventure" and a rating of 7.5 or higher</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph"><p>The output should be formatted as <em>Movie Title</em> (<em>year</em>) [<em>rating</em>].</p></div>
+<div class="paragraph"><p>For example: Alice in Wonderland (2010) [6.5]</p></div>
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The challenge that we need to solve in this presentation has two problems.</p></div>
+<div class="paragraph"><p>First, let us find all movies with word "pirate" in their titles.
+Second, let us find movies with genre "Adventure" and a rating of 7.5 or higher.
+We also have specific requirements for the format to display the results.</p></div>
+<div class="paragraph"><p>To address this challenge, we need to know how to access specific column values, such as title,
+genre, rating, and release year. These values are encapsulated in objects of type <em>CassandraRow</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="data-type-conversions">
+<h2>Data Type Conversions</h2>
+<div class="paragraph"><p><strong>You must know a type before you can read a value</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:50%" />
+<col style="width:50%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Cassandra Type</th>
+<th class="tableblock halign-left valign-top">Scala Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>ascii</em>, <em>text</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>String</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>bigint</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Long</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>blob</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>ByteBuffer</em>, <em>Array[Byte]</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>boolean</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Boolean</em>, <em>Int</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>counter</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Long</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>decimal</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>BigDecimal</em>, <em>java.math.BigDecimal</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>double</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Double</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>float</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Float</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>inet</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>java.net.InetAddress</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>int</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Int</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>list</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Vector</em>, <em>List</em>, <em>Iterable</em>, <em>Seq</em>, <em>IndexedSeq</em>, <em>java.util.List</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>map</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Map</em>, <em>TreeMap</em>, <em>java.util.HashMap</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>set</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Set</em>, <em>TreeSet</em>, <em>java.util.HashSet</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>text</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>String</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>timestamp</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Long</em>, <em>java.util.Date</em>, <em>java.sql.Date</em>, <em>org.joda.time.DateTime</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>uuid</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>java.util.UUID</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>timeuuid</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>java.util.UUID</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>varchar</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>String</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>varint</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>BigInt</em>, <em>java.math.BigInteger</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>tuple</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>TupleValue</em>, <em>scala.Product</em>, <em>org.apache.commons.lang3.tuple.Pair</em>, <em>org.apache.commons.lang3.tuple.Triple</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>user defined type</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>UDTValue</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>To be able to access values in a <em>CassandraRow</em>, we first must know their Scala data types.</p></div>
+<div class="paragraph"><p>This table lists how Cassandra types are converted to Scala types. For example,
+Cassandra&#8217;s TEXT, INT, and FLOAT map to Scala&#8217;s <em>String</em>, <em>Int</em>, and <em>Float</em>, respectively.
+In some cases, there are multiple type conversion alternatives, such as for Cassandra&#8217;s SET
+that can be converted to <em>scala.collection.immutable.Set</em>, <em>scala.collection.immutable.TreeSet</em>,
+or <em>java.util.HashSet</em>. When accessing values, we simply specify which data type among
+available alternatives to use.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="em-cassandrarow-em-api">
+<h2><em>CassandraRow</em> API</h2>
+<div class="paragraph"><p><strong>Reading column values</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">API Call</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>get<em>Type</em></strong>(<em>column</em>) or <strong>get</strong>[<em>Type</em>](<em>column</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns a <em>column</em> value of a known <em>Type</em>, where <em>Type</em> is a Scala equivalent
+of a Cassandra column type that can be primitive, collection, UDT, or tuple.
+</p>
+<p class="tableblock"></p>
+<p class="tableblock"><br />
+</p>
+<p class="tableblock">For example, <strong>getString</strong>(<em>&#8230;&#8203;</em>), <strong>getSet</strong>[<em>Int</em>](<em>&#8230;&#8203;</em>), <strong>getUDTValue</strong>(<em>&#8230;&#8203;</em>),
+<strong>get</strong>[<em>String</em>](<em>&#8230;&#8203;</em>), <strong>get</strong>[<em>Set</em>[<em>Int</em>]](<em>&#8230;&#8203;</em>), <strong>get</strong>[<em>UDTValue</em>](<em>&#8230;&#8203;</em>),
+<strong>get</strong>[<em>Pair</em>[<em>Boolean</em>,<em>Double</em>]](<em>&#8230;&#8203;</em>).</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph"><p>If a <em>column</em> value does not exist, a <em>NullPointerException</em> is thrown.</p></div>
+<div class="paragraph"><p>For a
+collection <em>column</em> value that does not exist, an empty collection is returned.</p></div>
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>We are now ready to talk about the <em>CassandraRow</em> API.</p></div>
+<div class="paragraph"><p>To access a value in a <em>CassandraRow</em>, we must know a Cassandra table <em>column</em> name,
+such as <em>title</em>, <em>release_year</em>, <em>rating</em>, or <em>genres</em>, and a Scala data type for this value,
+such as <em>String</em>, <em>Int</em>, <em>Float</em>, and <em>Set</em>.</p></div>
+<div class="paragraph"><p>There are two versions of getters: <em>getType</em> and <em>get[Type]</em>. Both return a <em>column</em> value
+of a known <em>Type</em>, where <em>Type</em> is a Scala equivalent
+of a Cassandra column type that can be primitive, collection, UDT, or tuple.
+Here are some examples of <strong>getString</strong>(<em>&#8230;&#8203;</em>) and <strong>getSet</strong>[<em>Int</em>](<em>&#8230;&#8203;</em>), as well as the examples of
+<strong>get</strong>[<em>String</em>](<em>&#8230;&#8203;</em>) and <strong>get</strong>[<em>Set</em>[<em>Int</em>]](<em>&#8230;&#8203;</em>).</p></div>
+<div class="paragraph"><p>It is possible that for a particular <em>CassandraRow</em>, a <em>column</em> value does not exist.
+When reading a value that does not exist, a <em>NullPointerException</em> is thrown, except for collection columns when
+an empty Scala collection is returned.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Reading column values that may not exist</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">API Call</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>get<em>Type</em>Option</strong>(<em>column</em>) or <strong>get</strong>[<em>Option</em>[<em>Type</em>]](<em>column</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns a <em>column</em> value of a known <em>Type</em> as a Scala <em>Option</em> value, where <em>Type</em> is a Scala equivalent
+of a Cassandra column type that can be primitive, UDT, or tuple. These methods are not useful for
+collection columns.
+</p>
+<p class="tableblock"><br />
+</p>
+<p class="tableblock"></p>
+<p class="tableblock">For example, <strong>getStringOption</strong>(<em>&#8230;&#8203;</em>), <strong>getUDTValueOption</strong>(<em>&#8230;&#8203;</em>),
+<strong>get</strong>[<em>Option</em>[<em>String</em>]](<em>&#8230;&#8203;</em>), <strong>get</strong>[<em>Option</em>[<em>UDTValue</em>]](<em>&#8230;&#8203;</em>),
+<strong>get</strong>[<em>Option</em>[<em>Pair</em>[<em>Boolean</em>,<em>Double</em>]]](<em>&#8230;&#8203;</em>).</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph"><p>These methods should be used when reading potentially <em>null</em> data to prevent getting a <em>NullPointerException</em>.
+Existing and non-existing <em>column</em> values become objects <em>Some</em>(<em>value</em>) and <em>None</em> of Scala type <em>Option</em>, respectively.</p></div>
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>To handle missing or <em>null</em> values correctly, we should use these two getters that
+wrap a <em>column</em> value as a Scala <em>Option</em> type. The <em>Option</em> type can result in
+object <em>Some</em>(<em>value</em>) with an actual value or object <em>None</em> with no value. We can
+use <em>Option</em>'s methods <em>isDefined</em>, <em>get</em>, and <em>getOrElse</em> to further process <em>Some</em>(<em>value</em>)
+or <em>None</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="our-challenge-solution-2">
+<h2>Our Challenge Solution</h2>
+<div class="paragraph"><p><strong>Problem 1: Output all movies with word "pirate" in their titles</strong></p></div>
+<div class="listingblock">
+<div class="title"><em>Solution</em></div>
+<div class="content">
+<pre class="CodeRay"><code>movies.filter(row =&gt; row.getString("title").toLowerCase.contains("pirate"))
+      .map{ row =&gt; row.getString("title") +
+            " (" + row.getInt("release_year") + ")" +
+            " [" + row.getFloatOption("rating").getOrElse("Not rated yet") + "]" }
+      .collect
+      .foreach(println)</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Results</em></div>
+<div class="content">
+<pre class="CodeRay"><code>Pirates of the Caribbean: Dead Men Tell No Tales (2017) [Not rated yet]
+Pirates of the Caribbean: On Stranger Tides (2011) [6.7]
+Pirates of the Caribbean: At World's End (2007) [7.1]
+Pirates of the Caribbean: Dead Man's Chest (2006) [7.3]
+Pirates of the Caribbean: The Curse of the Black Pearl (2003) [8.1]</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>We are now properly equipped so solve our challenge.</p></div>
+<div class="paragraph"><p>To output all movies with word "pirate" in their titles, we are applying
+transformation <em>filter</em> with the following condition. For each Cassandra row,
+get a column "title" value using <em>getString("title")</em>, convert the value to lowercase,
+and verify that the value contains substring "pirate".</p></div>
+<div class="paragraph"><p>We are using transformation <em>map</em> to convert each Cassandra row into a string literal in
+the required format. <em>getString("title")</em>, followed by <em>getInt("release_year")</em> in parenthesis,
+followed by <em>getFloatOption("rating")</em> in square brackets are all concatenated into a single
+value. The "rating" value gets a special <em>Option</em> treatment because it may not exist for every movie in
+the table. Notice how the final results are displayed.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Problem 2: Output all movies with genre "Adventure" and a rating of 7.5 or higher</strong></p></div>
+<div class="listingblock">
+<div class="title"><em>Solution</em></div>
+<div class="content">
+<pre class="CodeRay"><code>movies.filter{ row =&gt; row.getSet[String]("genres").contains("Adventure") &amp;&amp;
+                      row.get[Option[Float]]("rating").isDefined &amp;&amp;
+                      row.get[Option[Float]]("rating").get &gt;= 7.5 }
+      .map{ row =&gt; row.getString("title") +
+            " (" + row.getInt("release_year") + ")" +
+            " [" + row.getFloat("rating") + "]" }
+      .collect
+      .foreach(println)</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Results</em></div>
+<div class="content">
+<pre class="CodeRay"><code>Pirates of the Caribbean: The Curse of the Black Pearl (2003) [8.1]</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Finally, outputting all movies with genre "Adventure" and a rating of 7.5 or higher can be achieved
+using <em>filter</em> and <em>map</em> in a similar fashion.</p></div>
+<div class="paragraph"><p>The <em>filter</em> predicate is more complex. We are getting a set value for "genres" using
+<em>getSet[String]("genres")</em> and verifying that the set contains "Adventure" as its element.
+In addition, we are accessing "rating" and verifying that its value exists and if so, we are
+checking that it is greater or equal to 7.5.</p></div>
+<div class="paragraph"><p>The <em>map</em> logic is actually simpler than in the previous example. In particular,
+a "rating" value is assumed to exist because all <em>null</em> or not defined values were filtered out in
+the preceding step.</p></div>
+<div class="paragraph"><p>Only one movie that satisfies our query is returned in the output.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-spark-cassandra-connector-cassandra-convert-data">
+<h2>Retrieving an RDD of Cassandra Rows</h2>
+<div class="paragraph"><p><strong>Example Cassandra table from the KillrVideo domain</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector/cassandra-convert-data/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>val movies = sc.cassandraTable("killr_video","movies_by_actor")
+               .where("actor = 'Johnny Depp'")
+               .select("release_year","title","rating")
+
+// movies: com.datastax.spark.connector.rdd.CassandraTableScanRDD[
+//                      com.datastax.spark.connector.CassandraRow]</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In many cases, you will retrieve data from a Cassandra table as an RDD of <em>CassandraRow</em> objects.
+Like in this example, we are retrieving data from table <em>movies_by_actor</em> with partition key <em>actor</em>
+and clustering columns <em>release_year</em> and <em>movie_id</em>. The <em>movies</em> RDD
+contains <em>CassandraRow</em> objects that correspond to rows in this table. Each resulting Cassandra row
+has columns "release_year", "title", and "rating" that describe a movie featuring
+"Johnny Depp".</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="the-challenge-3">
+<h2>The Challenge</h2>
+<div class="paragraph"><p><strong>Converting Cassandra rows to tuples or objects</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Important to support certain RDD operations</li>
+<li>Convenient to work with for some applications</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Besides <em>CassandraRow</em> objects, it is also common to use other structures for holding data retrieved from Cassandra,
+such as
+Scala tuples or Scala case class objects. This can be important to support certain RDD operations, including
+many Spark transformations and actions that are defined for Key-Value Pair RDDs. It can also
+be convenient to deal with class objects from  the application development point of view.</p></div>
+<div class="paragraph"><p>In this presentation, our challenge is to establish good practices for converting Cassandra rows to
+tuples or case class objects.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-cassandra-connector-api-2">
+<h2>Spark-Cassandra Connector API</h2>
+<div class="paragraph"><p><strong>Retrieving and converting Cassandra data</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">API Call</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>cassandraTable</strong>[<em>Type</em>](<em>keyspace</em>, <em>table</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns an RDD that contains all rows from a Cassandra <em>table</em> in a specified <em>keyspace</em>.
+The resulting RDD elements are of type <em>Type</em>, which is usually a Scala tuple definition
+or case class name.
+Ordering of tuple components and naming of case class properties have to match
+column ordering and naming, respectively.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>as</strong>(<em>f</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optionally used with <em>cassandraTable</em>() to define a mapping <em>f</em> from column values to
+Scala tuple components, case class object constructor parameters, or other constructs. This is
+the most generic method for data conversion on the Cassandra side.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>keyBy</strong>[<em>KeyType</em>](<em>columns</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optionally used with <em>cassandraTable</em>[<em>ValueType</em>](&#8230;&#8203;) to convert Cassandra rows to pairs
+of objects, where a pair key is of type <em>KeyType</em> and a pair value is of type <em>ValueType</em>.
+<em>KeyType</em> and <em>ValueType</em> are usually defined as Scala tuples and/or case classes.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Primarily, we should be using the following three methods provided by the <em>Spark-Cassandra Connector</em> API
+for retrieving data from Cassandra in a desired format. The conversion is performed on the Cassandra side,
+making it much more efficient than if we were to convert using Spark transformations.</p></div>
+<div class="paragraph"><p>First, method <em>cassandraTable</em> allows specifying a <em>Type</em> that should be used for resulting RDD elements. This type
+can be a primitive type, tuple, or user-defined class. When using tuples,  ordering of tuple components must
+match ordering of row columns retrieved from Cassandra. When using case classes, property names must match to column names
+exactly or by converting the underscore naming convention used in Cassandra to the camelCase naming convention used for Scala.
+<em>casssandraTable</em> provides a short and convenient syntax for simple conversions.</p></div>
+<div class="paragraph"><p>Second, method <em>as</em> can be used together with <em>cassandraTable</em> to convert data based on a supplied mapping
+function <em>f</em>. The function takes row columns as parameters and maps them to any desirable representation,
+such as a tuple, object, or you name it. This is the most generic method for data conversion
+on the Cassandra side that you may ever need. When using method <em>as</em>, you can control ordering or naming
+as needed.</p></div>
+<div class="paragraph"><p>Finally, there is method <em>keyBy</em> that can be used together with <em>cassandraTable</em> to represent data as
+key-value pairs, where both key and value can be of primitive or complex data type.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="solution-1-rows-to-tuples">
+<h2>Solution 1: Rows-to-Tuples</h2>
+<div class="listingblock">
+<div class="title"><em>Using method cassandraTable[Type](&#8230;&#8203;)</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val movies = sc.cassandraTable[(Int,String,Option[Float])]("killr_video","movies_by_actor")
+               .where("actor = 'Johnny Depp'").select("release_year","title","rating")
+// movies: com.datastax.spark.connector.rdd.CassandraTableScanRDD[(Int, String, Option[Float])]</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Using method as(f)</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val movies = sc.cassandraTable("killr_video","movies_by_actor")
+               .where("actor = 'Johnny Depp'").select("release_year","title","rating")
+               .as((y:Int,t:String,r:Option[Float]) =&gt; (y,t,r))
+// movies: com.datastax.spark.connector.rdd.CassandraRDD[(Int, String, Option[Float])]</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In this solution, we demonstrate row-to-tuple conversion using two of the discussed methods.</p></div>
+<div class="paragraph"><p>Using <em>cassandraTable</em>, we are specifying a tuple with three components of type <em>Int</em>,
+<em>String</em>, and <em>Option</em>[<em>Float</em>]. These Scala data types directly correspond to data types of columns
+<em>release_year</em>, <em>title</em>, and <em>rating</em> of table <em>movies_by_actor</em>.
+<em>Option</em> is used to handle <em>null</em> values in column <em>rating</em>. Notice how the resulting RDD <em>movies</em>
+is defined - it contains tuples rather than <em>CassandraRow</em> objects.</p></div>
+<div class="paragraph"><p>Using <em>as</em>, we are defining the function with parameters <em>y</em>, <em>t</em>, and <em>r</em> that simply returns a tuple
+with the three components, resulting in the same conversion as before.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="solution-2-rows-to-objects">
+<h2>Solution 2: Rows-to-Objects</h2>
+<div class="listingblock">
+<div class="title"><em>Using method cassandraTable[Type](&#8230;&#8203;)</em></div>
+<div class="content">
+<pre class="CodeRay"><code>case class Record(releaseYear: Int, title: String, rating: Option[Float])
+val movies = sc.cassandraTable[Record]("killr_video","movies_by_actor")
+               .where("actor = 'Johnny Depp'").select("release_year","title","rating")
+// movies: com.datastax.spark.connector.rdd.CassandraTableScanRDD[Record]</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Using method as(f)</em></div>
+<div class="content">
+<pre class="CodeRay"><code>case class Record(releaseYear: Int, title: String, rating: Option[Float])
+val movies = sc.cassandraTable("killr_video","movies_by_actor")
+               .where("actor = 'Johnny Depp'").select("release_year","title","rating")
+               .as((y:Int,t:String,r:Option[Float]) =&gt; new Record(y,t,r))
+// movies: com.datastax.spark.connector.rdd.CassandraRDD[Record]</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Here, we are converting rows to case class objects using the same two methods.</p></div>
+<div class="paragraph"><p>We are first defining case class <em>Record</em> with three property names. Note that <em>releaseYear</em> uses
+the camelCase naming convention corresponding to column <em>release_year</em> with underscore. Instead of <em>releaseYear</em>,
+we could have also used <em>release_year</em> for the property name.
+The other two
+property names, <em>title</em> and <em>rating</em>, are exactly the same as the corresponding column names.</p></div>
+<div class="paragraph"><p>For the solution using <em>cassandraTable</em>, we are simply specifying <em>Record</em> as a data type of resulting RDD elements.</p></div>
+<div class="paragraph"><p>For the solution using <em>as</em>, we are defining a function that calls <em>Record</em>'s constructor and returns the resulting object.</p></div>
+<div class="paragraph"><p>Both approaches work great!</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="solution-3-correct-but-less-efficient">
+<h2>Solution 3: Correct but Less Efficient</h2>
+<div class="listingblock">
+<div class="title"><em>Row-to-tuple solution using transformation map(f)</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val movies = sc.cassandraTable("killr_video","movies_by_actor")
+               .where("actor = 'Johnny Depp'").select("release_year","title","rating")
+               .map(row =&gt; (row.getInt("release_year"),row.getString("title"),row.getFloatOption("rating")))
+// movies: org.apache.spark.rdd.RDD[(Int, String, Option[Float])]</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Row-to-object solution using transformation map(f)</em></div>
+<div class="content">
+<pre class="CodeRay"><code>case class Record(releaseYear: Int, title: String, rating: Option[Float])
+val movies = sc.cassandraTable("killr_video","movies_by_actor")
+               .where("actor = 'Johnny Depp'").select("release_year","title","rating")
+               .map(row =&gt; new Record(row.getInt("release_year"),row.getString("title"),
+                                      row.getFloatOption("rating")))
+// movies: org.apache.spark.rdd.RDD[Record]</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Finally, for educational purposes, we are demonstrating a solution that uses
+Spark&#8217;s <em>map</em> transformation. Indeed, <em>map</em> allows us to achieve the same  result
+when converting rows to tuples or rows to objects. However this solution is less efficient
+than the previous two solutions. Using <em>map</em>, we are converting data on the Spark side, which implies that
+data first has to be retrieved from Cassandra as <em>CassandraRow</em> objects, transferred to Spark and only then
+transformed to tuples or case class objects.
+This is how not to convert your data to tuples or case class objects!</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-spark-cassandra-connector-cassandra-save-data">
+<h2>Saving an RDD into a Cassandra Table</h2>
+<div class="paragraph"><p><strong>Common scenarios and an example Cassandra table</strong></p></div>
+<div class="imageblock" style="float: right">
+<div class="content">
+<img alt="favorite movies" src="images/spark/spark-cassandra-connector/cassandra-save-data/favorite_movies.svg" />
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>Saving an RDD with <em>CassandraRow</em> objects</li>
+<li>Saving an RDD with case class objects</li>
+<li>Saving an RDD with tuples</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>A you remember, Spark is not a data storage system. Spark gets its datasets from an
+external system in the form of RDDs, process and analyses them, and pushes results back to the same
+or possibly different external system.
+Therefore, knowing how an RDD can be saved into a Cassandra table is very important.</p></div>
+<div class="paragraph"><p>We will cover the three common scenarios of saving an RDD with
+<em>CassandraRow</em> objects, user-defined case class objects, and tuples, respectively.
+We will use table <em>favorite_movies</em> from the <em>KillrVidoe</em> domain for our examples.
+Note that this table has the primary key consisting of two partition key columns <em>title</em>
+and <em>release_year</em>. The table has three columns of primitive data types (TEXT, INT, and FLOAT),
+one collection column <em>genres</em> of type SET, and one UDT column <em>details</em> that stores three primitive values
+for <em>country</em>, <em>language</em>, and movie <em>runtime</em> in minutes.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-cassandra-connector-api-3">
+<h2>Spark-Cassandra Connector API</h2>
+<div class="paragraph"><p><strong>RDD action that saves data into an existing table</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">API Call</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>saveToCassandra</strong>(<em>keyspace</em>, <em>table</em>, [SomeColumns(<em>columns</em>)])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inserts each source RDD element as a row into an existing Cassandra <em>table</em> in a specified <em>keyspace</em>.
+The last optional parameter is a column selector that is used to specify
+how object properties or tuple components map to
+specific <em>table</em> <em>columns</em>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p><em>Spark-Cassandra Connector</em> API provides RDD action <em>saveToCassandra</em> that can be called on
+an RDD to insert its elements as rows into an existing Cassandra <em>table</em> in a specified <em>keyspace</em>.
+The last optional parameter is a column selector, which is an object of class <em>SomeColumns</em>; it
+allows specifying how object properties or tuple components should be mapped to
+specific <em>table</em> <em>columns</em>. The column selector can be omitted if tuple components or
+object property names match column ordering or column names in the <em>table</em>, respectively.
+Yet, it always a good idea to specify <em>columns</em> explicitly for better code readability.</p></div>
+<div class="paragraph"><p>To use this method, the table must already exist in Cassandra.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>RDD actions that create and save data into a new table</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">API Call</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>saveAsCassandraTable</strong>(<em>keyspace</em>, <em>table</em>, [SomeColumns(<em>columns</em>)])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates a Cassandra <em>table</em> in an existing <em>keyspace</em> and inserts each source RDD element as a row
+into the <em>table</em>. A newly created <em>table</em> has a primary key consisting of the first column
+in the <em>SomeColumns(&#8230;&#8203;)</em> parameter, if present, or a column corresponding to the first property name
+in an RDD element class definition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>saveAsCassandraTableEx</strong>(<em>tableDefinition</em>, [SomeColumns(<em>columns</em>)])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates a Cassandra table in an existing keyspace according to a specified <em>tableDefinition</em> and
+inserts each source RDD element as a row
+into the table. <em>tableDefinition</em> can be used to customize partition key and clustering key columns, as well
+as any additional columns and their data types.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>These two RDD actions allow creating a new Cassandra <em>table</em> in an existing <em>keyspace</em> and inserting all RDD elements
+into this table. The major difference is that <em>saveAsCassandraTable</em> creates a table with only one column in its
+primary key, while <em>saveAsCassandraTableEx</em> supports a fully-customizable <em>tableDefinition</em> with desired
+partition key and clustering key columns, as well
+as any additional columns and their data types.</p></div>
+<div class="paragraph"><p>As an alternative to these two methods, one can issue a regular CQL CREATE TABLE statement via the <em>CQL Connector</em>
+(another library) to
+create a table first, and then use action <em>saveToCassandra</em> to insert data.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="saving-an-rdd-with-em-cassandrarow-em-objects">
+<h2>Saving an RDD with <em>CassandraRow</em> Objects</h2>
+<div class="listingblock">
+<div class="title"><em>movie: RDD[CassandraRow]</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val movie = sc.cassandraTable("killr_video","movies_by_actor")
+              .where("actor = 'Johnny Depp'")
+              .select("title","release_year","rating")
+              .filter(row =&gt; row.getString("title") == "Alice in Wonderland")
+
+movie.saveToCassandra("killr_video","favorite_movies",
+                      SomeColumns("title","release_year","rating"))</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:12%" />
+<col style="width:25%" />
+<col style="width:25%" />
+<col style="width:12%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">title</th>
+<th class="tableblock halign-left valign-top">release_year</th>
+<th class="tableblock halign-left valign-top">details</th>
+<th class="tableblock halign-left valign-top">genres</th>
+<th class="tableblock halign-left valign-top">rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Alice in Wonderland</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2010</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6.5</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In our first example, let us save an RDD with <em>CassandraRow</em> objects into table <em>favorite_movies</em>.</p></div>
+<div class="paragraph"><p>Since you are most likely to get an RDD with Cassandra rows by retrieving data from Cassandra, we
+are doing the same here. The <em>movie</em> RDD is populated by retrieving data from table
+<em>movies_by_actor</em>. We are only interested in Johnny Depp&#8217;s movie "Alice in Wonderland" and three columns:
+<em>title</em>, <em>release_year</em>, and <em>rating</em>.</p></div>
+<div class="paragraph"><p>As you can see, using <em>saveToCassandra</em> is quite straightforward and convenient, too.
+A single row is saved into table <em>favorite_movies</em> as shown at the bottom. We will
+insert values for <em>genres</em> and <em>details</em> in the following examples.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="saving-an-rdd-with-case-class-objects">
+<h2>Saving an RDD with Case Class Objects</h2>
+<div class="listingblock">
+<div class="title"><em>genres: RDD[GenresInfo]</em></div>
+<div class="content">
+<pre class="CodeRay"><code>case class GenresInfo (title: String, releaseYear: Int, genres: Set[String])
+
+val genres = sc.parallelize(Seq(
+                 new GenresInfo("Alice in Wonderland",2010,Set("Adventure","Family"))
+                ))
+
+genres.saveToCassandra("killr_video","favorite_movies",
+                       SomeColumns("title","release_year","genres"))</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:12%" />
+<col style="width:25%" />
+<col style="width:25%" />
+<col style="width:12%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">title</th>
+<th class="tableblock halign-left valign-top">release_year</th>
+<th class="tableblock halign-left valign-top">details</th>
+<th class="tableblock halign-left valign-top">genres</th>
+<th class="tableblock halign-left valign-top">rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Alice in Wonderland</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2010</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">{'Adventure', 'Family'}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6.5</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Our second example demonstrates how to save an RDD of case class objects into the same Cassandra table.</p></div>
+<div class="paragraph"><p>Here, we are defining case class <em>GenresInfo</em> with properties <em>title</em>, <em>releaseYear</em>, and <em>genres</em>.
+We do need to always specify values for columns <em>title</em> and <em>release_year</em> in table <em>favorite_movies</em> at the very minimum,
+because these two columns constitute a primary key.</p></div>
+<div class="paragraph"><p>We are then creating RDD <em>genres</em> with a single element of type <em>GenresInfo</em> representing movie
+"Alice in Wonderland" and inserting this element into table <em>favorite_movies</em> using action <em>saveToCassandra</em>.
+Technically, we are doing an upsert to update our previously inseted row with <em>genres</em> information.</p></div>
+<div class="paragraph"><p>Note that we are dealing with collection column <em>genres</em> using exactly the same procedure as with the columns of primitive
+types. By default, Cassandra overwrites an existing collection value, if present, but <em>Spark-Cassandra Connector</em>
+also provides means to prepend, append, and remove values in collection columns of different types.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="saving-an-rdd-with-tuples">
+<h2>Saving an RDD with Tuples</h2>
+<div class="listingblock">
+<div class="title"><em>details: RDD[(String, Int, UDTValue)]</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val details = sc.parallelize(Seq(
+                  ("Alice in Wonderland",2010,
+                   UDTValue.fromMap(Map("country"-&gt;"USA","language"-&gt;"English","runtime"-&gt;108)))
+                 ))
+
+details.saveToCassandra("killr_video","favorite_movies",
+                        SomeColumns("title","release_year","details"))</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:12%" />
+<col style="width:25%" />
+<col style="width:25%" />
+<col style="width:12%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">title</th>
+<th class="tableblock halign-left valign-top">release_year</th>
+<th class="tableblock halign-left valign-top">details</th>
+<th class="tableblock halign-left valign-top">genres</th>
+<th class="tableblock halign-left valign-top">rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Alice in Wonderland</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2010</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">{country: 'USA', language: 'English', runtime: 108}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">{'Adventure', 'Family'}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6.5</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Finally, let us demonstrate how to save an RDD with tuples.</p></div>
+<div class="paragraph"><p>We are creating the <em>details</em> RDD by parallelizing a sequence with a single tuple.
+The first two tuple components correspond to the movie title ("Alice in Wonderland") and release year (2010),
+which are required to uniquely identify a row. The third and last component represents a UDT value that is
+created from a Scala <em>Map</em> with keys <em>country</em>, <em>language</em>, and <em>runtime</em>.</p></div>
+<div class="paragraph"><p>As you can see, even though we are dealing with tuples and a UDT column, the <em>saveToCassandra</em> call is
+rather similar to our previous examples. The resulting row in table <em>favorite_movie</em> after our three insert
+is shown and is now complete.</p></div>
+<div class="paragraph"><p>In all the examples, for brevity of our presentation, each RDD contained only one element. You
+can try saving RDDs with multiple elements to insert many rows into a Cassandra table&#8201;&#8212;&#8201;programming
+logic will stay the same. Also, you should give a try to actions <em>saveAsCassandraTable</em> and <em>saveAsCassandraTableEx</em>.
+Have fun!</p></div>
+</div>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">
+<i class="icon-chevron-with-circle-left"></i>
+</a>
+<a class="deck-next-link" href="#" title="Next">
+<i class="icon-chevron-with-circle-right"></i>
+</a>
+</div>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/d3.v2.js"></script>
+<script src="deck.js/jquery-ui.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/animation/deck.animation.js"></script>
+<script src="deck.js/extensions/deck.js-notes/deck.notes.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/clone/deck.clone.js"></script>
+<script src="deck.js/extensions/svg/svg.min.js"></script>
+<script src="js/course.js"></script>
+<footer>
+<div class="flex-element deck-course">
+<p>&copy; 2016 DataStax. Use only with permission. &bull;
+<span class="course-title">Connecting Spark to Cassandra</span></p>
+</div>
+<div class="flex-element deck-brand">
+<a href="http://academy.datastax.com" target="blank">DataStax Academy</a>
+</div>
+<div class="deck-progressbar">
+<span></span>
+</div>
+</footer>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+      $.deck('disableScale');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+    $(document).bind('deck.change', function(event, from, to) {
+      var width = to / ($.deck('getSlides').length - 1) * 100;
+      $('.deck-progressbar span').css('width', width + '%');
+    });
+  //]]>
+</script>
+</body>
+</html>

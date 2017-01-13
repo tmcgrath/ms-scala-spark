@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.2" name="generator" />
+<title>Introduction</title>
+<link href="deck.js/themes/style/font.css" rel="stylesheet" />
+<style>
+.conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 1.2em; height: 1.2em; font-size: 0.9em; font-weight: bold; line-height: 1.2; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -0.1em; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+.colist table td:first-of-type { padding-right: 0.25em; }
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{font-weight: normal}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#00}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/datastax.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Introduction</h1>
+</section>
+<section class="slide" id="spark-data-analytics-data-analytics">
+<h2>Data Analytics</h2>
+<div class="paragraph"><p><em><strong>Definition</strong></em></p></div>
+<div class="verseblock">
+<pre class="content">Science and craft of building applications from data analysis steps to
+discover useful information and support data-driven decision making</pre>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="paragraph"><p><em><strong>Use cases</strong></em></p></div>
+<div class="ulist">
+<ul>
+<li>Recommendations</li>
+<li>Fraud detection</li>
+<li>Social networks and Web link analysis</li>
+<li>Marketing and advertising decisions</li>
+<li>Customer 360</li>
+<li>Sales and stock market analytics</li>
+<li>IoT analytics</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Data analytics is a big and complex field, affecting all areas of our life.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="analysis-steps">
+<h2>Analysis Steps</h2>
+<div class="ulist">
+<ul>
+<li>Statistical analysis</li>
+<li>Classification</li>
+<li>Clustering</li>
+<li>Regression</li>
+<li>Similarity matching</li>
+<li>Collaborative filtering</li>
+<li>Profiling</li>
+<li>Dimensionality reduction</li>
+<li>Feature extraction</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Analytical applications or analysis workflows are typically composed of many analysis steps.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="analytical-application-lifecycle">
+<h2>Analytical Application Lifecycle</h2>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="design" src="images/spark/data-analytics/data-analytics/design.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This illustration shows CRISP-DM&#8201;&#8212;&#8201;Cross Industry Standard Process for Data Mining.</p></div>
+<div class="paragraph"><p>There is a related standard called SEMMA&#8201;&#8212;&#8201;Sample, Explore, Modify, Model,	Assess.
+SEMMA is similar to CRISP-DM but does not cover <em>Business understanding</em>
+and <em>Deployment</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="the-roles-of-cassandra-and-spark">
+<h2>The Roles of Cassandra and Spark</h2>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="design2" src="images/spark/data-analytics/data-analytics/design2.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Cassandra stores huge amounts of data.</p></div>
+<div class="paragraph"><p>Spark is a computation engine:</p></div>
+<div class="ulist">
+<ul>
+<li><p>
+<em>Data preparation</em>:<div class="ulist">
+<ul>
+<li>Sanitize, normalize, and scale data</li>
+<li>Convert data to a more suitable format</li>
+<li>Integrate data from multiple sources</li>
+</ul>
+</div></p></li>
+<li><p>
+<em>Modeling</em>:<div class="ulist">
+<ul>
+<li>(Mathematical) predictive, causal, descriptive models</li>
+<li>Machine learning</li>
+<li>Data mining</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="cassandra">
+<h2>Cassandra</h2>
+<div class="paragraph"><p><strong>Distributed transactional database designed for big data and high availability</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Millions transactions per second</li>
+<li>1000-node cluster scalability</li>
+<li>Millisecond response time and linear scalability</li>
+<li>Extremely high availability and partition tolerance</li>
+<li>Seamless multi data center support</li>
+</ul>
+</div>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="cassandra" src="images/spark/data-analytics/data-analytics/cassandra.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Cassandra is a perfect fit for the job!</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark">
+<h2>Spark</h2>
+<div class="paragraph"><p><strong>Distributed computation engine designed for big data and in-memory processing</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Interactive and batch analytics</li>
+<li>Up to 100x faster than Apache Hadoop&#8482;</li>
+<li>5-10x less code than Apache Hadoop&#8482;</li>
+<li>Efficiency and scalability</li>
+<li>Fault-tolerance</li>
+</ul>
+</div>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="spark" src="images/spark/data-analytics/data-analytics/spark.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Spark is a perfect fit for the job!</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="datastax-enterprise">
+<h2>DataStax Enterprise</h2>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="dse" src="images/spark/data-analytics/data-analytics/dse.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This is the ultimate solution for your enterprise!</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-architecture-architecture">
+<h2>Spark Architecture</h2>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="spark" src="images/spark/architecture/architecture/spark.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>Master-worker architecture</li>
+<li>Master (aka cluster manager) manages Workers and their resources</li>
+<li>Workers instantiate Executors and give them resources (cores and memory)</li>
+<li>Driver schedules computation directly with Executors</li>
+<li><p>
+Failure tolerance<div class="ulist">
+<ul>
+<li>Worker/Executor - no problem; computation is picked up by remaining Workers/Executors</li>
+<li>Master - new Master is elected (DSE feature); running applications are not affected; new applications
+are only affected temporarily until new Master is started</li>
+</ul>
+</div></p></li>
+<li><p>
+Notes:<div class="ulist">
+<ul>
+<li>DSE Spark cluster manager is standalone (open-source Spark also supports Apache Mesos&#8482; and Apache Hadoop&#8482; YARN)</li>
+<li>If Driver requests more resources than a cluster can supply, Master will respond with "not enough resources"</li>
+<li>Master, Worker, Executor are all separate JVMs</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-computation-dag-jobs-stages-and-tasks">
+<h2>Spark Computation: DAG, Jobs, Stages, and Tasks</h2>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="computation" src="images/spark/architecture/architecture/computation.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>DAG stands for Directed Acyclic Graph of Operations</li>
+<li>DAG is divided into Jobs (Job per action)</li>
+<li>Job is divided into Stages (a shuffling operation or action delimits a Stage)</li>
+<li>Stages have identical Tasks (Task per RDD partition)</li>
+<li>Tasks are executed by Executors in parallel</li>
+<li>Executors hold input and output RDD partitions in cache (and sometimes on disk)</li>
+<li>Intermediate results are never transferred to Driver but <em>SparkContext</em> knows about
+their locations to schedule subsequent computation</li>
+<li>Note:  Stages 3 and 4 will be skipped if the results of Stages 0 and 1 are cached</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="cassandra-architecture">
+<h2>Cassandra Architecture</h2>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="cassandra" src="images/spark/architecture/architecture/cassandra.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This is a quick review of what you already know about Cassandra:</p></div>
+<div class="ulist">
+<ul>
+<li>Peer-to-peer architecture</li>
+<li>Failure tolerance/availability</li>
+<li>Cassandra token ring</li>
+<li>Data structures (table)</li>
+<li>Data distribution (partition key)</li>
+<li>Data replication (replication factor)</li>
+<li>Data consistency (consistency level)</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="dse-integration-of-spark-and-cassandra">
+<h2>DSE Integration of Spark and Cassandra</h2>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="integration" src="images/spark/architecture/architecture/integration.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>Each physical node runs both Cassandra and Spark JVMs to achieve the best data locality</li>
+<li><em>Spark-Cassandra Connector</em> enables communication between Spark and Cassandra components</li>
+<li><em>Spark-Cassandra Connector</em> is a library for (primarily) retrieving data from and storying data into Cassandra</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="multi-data-center-deployment">
+<h2>Multi Data Center Deployment</h2>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="deployment" src="images/spark/architecture/architecture/deployment.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In production, it is very important to separate transactional and analytical workloads into two or more data centers.</p></div>
+<div class="ulist">
+<ul>
+<li><em>DC Operations</em> (Cassandra only): fast real-time transactions</li>
+<li><em>DC Analytics</em> (Cassandra + Spark): batch and near-real-time, interactive jobs</li>
+</ul>
+</div>
+<div class="paragraph"><p><em>DC Operations</em> collects data and serves real-time applications. Data is typically replicated to <em>DC Analytics</em> automatically.</p></div>
+<div class="paragraph"><p><em>DC Analytics</em> uses Spark to retrieve data from Cassandra, run expensive analysis, and store results back to Cassandra.
+Results may or may not be replicated back to <em>DC Operations</em>, depending on application
+requirements (readily controlled by replication strategy settings for a keyspace).</p></div>
+<div class="paragraph"><p>There can be, of course, multiple operational and analytical data centers.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-tools-spark-shell">
+<h2>Spark Shell</h2>
+<div class="paragraph"><p><strong>Interactive Scala-REPL-based Spark client</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Interpreter for Scala and Spark Scala API</li>
+<li><p>
+Interpreter-aware, predefined objects<div class="ulist">
+<ul>
+<li><em>SparkContext</em>&#8201;&#8212;&#8201;<em>sc</em></li>
+<li><em>SQLContext</em>&#8201;&#8212;&#8201;<em>sqlContext</em></li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Scala REPL = Scala Read-Eval-Print-Loop, which is also known as interpreter.</p></div>
+<div class="paragraph"><p>We will use Spark Shell most of the time to demonstrate various
+Spark Scala API calls.</p></div>
+<div class="paragraph"><p>There are also Python and R interactive clients called <em>pyspark</em> and <em>sparkR</em>, respectively.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="starting-dse-spark-shell">
+<h2>Starting DSE Spark Shell</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ dse spark
+
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 1.x.x
+      /_/
+
+Using Scala version 2.x.x
+
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala&gt;</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Command <em>dse spark</em> starts the DSE variant of Spark Shell.
+In open-source Spark, the command is <em>spark-shell</em>.</p></div>
+<div class="paragraph"><p>This is a sample output with some lines omitted.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-shell-options">
+<h2>Spark Shell Options</h2>
+<div class="paragraph"><p><strong>An incomplete list of options to get you started</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:28%" />
+<col style="width:57%" />
+<col style="width:14%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Option</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Dafault value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--help</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Output usage information.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--master MASTER_URL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify a Master URL as <em>spark://host:port</em> or <em>local[N]</em>,
+where <em>N</em> is a desired number of threads.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>local</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--name NAME</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify a name for your Spark Shell application.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Spark shell</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--driver-memory MEM</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify how much memory to use for Driver.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>512M</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--executor-memory MEM</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify how much memory to use per Executor.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1G</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--total-executor-cores NUM</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify a total number of cores for all Executors.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All available</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>There are a number of other options that you should explore.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="examples-of-using-options">
+<h2>Examples of Using Options</h2>
+<div class="listingblock">
+<div class="title"><em>Connecting to a remote cluster</em></div>
+<div class="content">
+<pre class="CodeRay"><code>dse spark --master spark://172.31.20.18:7077 \
+          --name "Artems's Shell" \
+          --executor-memory 2G \
+          --total-executor-cores 4</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Running locally</em></div>
+<div class="content">
+<pre class="CodeRay"><code>dse spark --master local[4] \
+          --name "Tim's Shell"</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Artem&#8217;s Shell is going to connect to a remote Master to request for resources.
+Note that 7077 is the default port that can be changed if needed.</p></div>
+<div class="paragraph"><p>Tim&#8217;s Shell is going to connect to Spark on Tim&#8217;s laptop.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="examples-of-entering-expressions">
+<h2>Examples of Entering Expressions</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>scala&gt; println("Hello Spark!")
+Hello Spark!
+
+scala&gt; val four = 2 + 2
+four: Int = 4
+
+scala&gt; val numbers = sc.parallelize(List(1,2,3,4,5,6,7,8,9))
+numbers: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[8] at parallelize at &lt;console&gt;:55
+
+scala&gt; val movies = sc.cassandraTable("killr_video","movies")
+movies: com.datastax.spark.connector.rdd.CassandraTableScanRDD[com.datastax.spark.connector.CassandraRow] ...</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The first two expressions are pure Scala. The last two use <em>sc</em> and Spark Scala API.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="auto-completion-and-copy-pasting">
+<h2>Auto-Completion and Copy-Pasting</h2>
+<div class="listingblock">
+<div class="title"><em>Auto-Completion</em></div>
+<div class="content">
+<pre class="CodeRay"><code>scala&gt; sc.&lt;Tab&gt;
+accumulable                accumulableCollection      accumulator                ...
+appName                    applicationId              asInstanceOf               ...
+...                        ...                        ...                        ...</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Copy-Pasting Multi-Line Expressions</em></div>
+<div class="content">
+<pre class="CodeRay"><code>scala&gt; :paste
+// Entering paste mode (ctrl-D to finish)
+
+sc.parallelize(List(1,2,3,4,5,6,7,8,9))
+  .reduce(_+_)
+
+// Exiting paste mode, now interpreting.
+
+res11: Int = 45</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>&lt;Tab&gt; is used for auto-complete. If you write code in an editor to copy-paste later, do not use tabulation!</p></div>
+<div class="paragraph"><p>The <em>:paste</em> mode must be used with multi-line expressions. Otherwise, Spark Shell will interpret each line as
+a separate expression.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-tools-spark-web-ui">
+<h2>Spark Web UI</h2>
+<div class="paragraph"><p><strong>Monitoring your cluster and applications</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:14%" />
+<col style="width:28%" />
+<col style="width:57%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">UI</th>
+<th class="tableblock halign-left valign-top">URL</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Master Web UI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a class="bare" href="http://&lt;master-host&gt;:7080">http://&lt;master-host&gt;:7080</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Displays information about Master, Workers, and running and completed applications.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application Web UI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a class="bare" href="http://&lt;driver-host&gt;:4040">http://&lt;driver-host&gt;:4040</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Displays information about running and completed jobs, stages, tasks, as well as
+information about persisted datasets, environment settings, and Executors that are controlled by an application.
+If more than one application is running, the Web UI ports are assigned as <code>4040</code>, <code>4041</code>, and so forth.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The Spark Web UI is extremely useful when designing, debugging, troubleshooting, optimizing, executing, and monitoring
+your cluster and applications.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="master-web-ui">
+<h2>Master Web UI</h2>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="master ui" src="images/spark/tools/spark-web-ui/master-ui.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Notice the Master URL.</p></div>
+<div class="paragraph"><p>Here we have a 3-node cluster and one running application that takes a half of the available resources.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="application-web-ui">
+<h2>Application Web UI</h2>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="application ui" src="images/spark/tools/spark-web-ui/application-ui.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Only one tab is shown. Hopefully you are already familiar with Stages and Tasks.</p></div>
+</div>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">
+<i class="icon-chevron-with-circle-left"></i>
+</a>
+<a class="deck-next-link" href="#" title="Next">
+<i class="icon-chevron-with-circle-right"></i>
+</a>
+</div>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/d3.v2.js"></script>
+<script src="deck.js/jquery-ui.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/animation/deck.animation.js"></script>
+<script src="deck.js/extensions/deck.js-notes/deck.notes.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/clone/deck.clone.js"></script>
+<script src="deck.js/extensions/svg/svg.min.js"></script>
+<script src="js/course.js"></script>
+<footer>
+<div class="flex-element deck-course">
+<p>&copy; 2016 DataStax. Use only with permission. &bull;
+<span class="course-title">Introduction</span></p>
+</div>
+<div class="flex-element deck-brand">
+<a href="http://academy.datastax.com" target="blank">DataStax Academy</a>
+</div>
+<div class="deck-progressbar">
+<span></span>
+</div>
+</footer>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+      $.deck('disableScale');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+    $(document).bind('deck.change', function(event, from, to) {
+      var width = to / ($.deck('getSlides').length - 1) * 100;
+      $('.deck-progressbar span').css('width', width + '%');
+    });
+  //]]>
+</script>
+</body>
+</html>

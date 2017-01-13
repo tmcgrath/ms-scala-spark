@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.2" name="generator" />
+<title>The Utility of Key/Value Pairs</title>
+<link href="deck.js/themes/style/font.css" rel="stylesheet" />
+<style>
+.conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 1.2em; height: 1.2em; font-size: 0.9em; font-weight: bold; line-height: 1.2; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -0.1em; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+.colist table td:first-of-type { padding-right: 0.25em; }
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{font-weight: normal}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#00}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/datastax.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>The Utility of Key/Value Pairs</h1>
+</section>
+<section class="slide" id="spark-key-value-pairs-pair-rdd">
+<h2>What is a Key-Value Pair RDD?</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Any RDD whose elements are key-value pairs<div class="ulist">
+<ul>
+<li>Key-value pair is a tuple with two components: (<em>key</em>, <em>value</em>)</li>
+<li>Different pairs may have the same keys</li>
+<li>Both keys and values can be of primitive or complex data types</li>
+</ul>
+</div></p></li>
+<li>Examples:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>val users = sc.parallelize(List( ("Alice",21), ("Bob",12), ("Bob",18) ))
+// users: org.apache.spark.rdd.RDD[(String, Int)]
+
+val movies = sc.cassandraTable("killr_video","movies")
+               .keyBy( row =&gt; (row.getString("title"), row.getInt("release_year")) )
+// movies: org.apache.spark.rdd.RDD[((String, Int), com.datastax.spark.connector.CassandraRow)]</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The first example: A Pair RDD <em>users</em> is created by parallelizing a collection with three
+key-value pairs. Notice that key "Bob" is repeated twice. The resulting RDD
+contains keys of type <em>String</em> and values of type <em>Int</em>.</p></div>
+<div class="paragraph"><p>The second example: A Pair RDD <em>movies</em> is created by retrieving data from a
+Cassandra table and applying <em>Spark-Cassandra Connector</em> transformation <em>keyBy</em>
+to organize each element as a key-value pair. Each key is a <em>Tuple</em>
+containing movie <em>title</em> (<em>String</em>) and <em>release_year</em> (<em>Int</em>). Each value is
+a <em>CassandraRow</em> object containing all columns, including <em>title</em> and <em>release_year</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="operations-on-key-value-pair-rdds">
+<h2>Operations on Key-Value Pair RDDs</h2>
+<div class="paragraph"><p><strong>Key-value pair semantics enables a number of important operations</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Key-based operations<div class="ulist">
+<ul>
+<li>Aggregation</li>
+<li>Grouping and sorting</li>
+<li>Inner and outer joins</li>
+<li>Union, intersection, difference</li>
+<li>Other "supporting" operations</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph"><p>Pair RDDs also support operations defined for generic RDDs, such as <em>filter</em>, <em>map</em>, <em>count</em>, and so forth.</p></div>
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In this presentation, we will focus on "supporting" transformations and actions.
+We call them "supporting" because they can be helpful and convenient to use with
+Pair RDDs; yet they are not primary operations Pair RDDs exist for (like aggregation, joins, etc.).</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="supporting-transformations-for-pair-rdds">
+<h2>"Supporting" Transformations for Pair RDDs</h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>keys</strong>()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD is formed by keys of the source RDD.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>values</strong>()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD is formed by values of the source RDD.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Both <em>keys</em>() and <em>values</em>() can be easily implemented using <em>map</em>(<em>f</em>).
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="keys" src="images/spark/key-value-pairs/pair-rdd/keys.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p><em>pairRDD.keys</em> is equivalent to <em>pairRDD.map{case (k,v) &#8658; k}</em></p></div>
+<div class="paragraph"><p><em>pairRDD.values</em> is equivalent to <em>pairRDD.map{case (k,v) &#8658; v}</em></p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>mapValues</strong>(<em>f</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD is formed by applying a function <em>f</em> on each value of
+the source RDD. Keys are retained without changes, which
+implies that any key-based partitioning of the source is also retained.
+There is a <em>one-to-one</em> correspondence between input and output elements.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>flatMapValues</strong>(<em>f</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Same as above except
+there is a <em>one-to-many</em> correspondence between input and output elements
+if <em>f</em> returns a <em>Seq</em> with more than one element.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+It is a bad idea to implement these transformations using <em>map</em>(<em>f</em>).
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="map values" src="images/spark/key-value-pairs/pair-rdd/map-values.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>It is a bad idea to implement these transformations using <em>map</em>. Here is why.</p></div>
+<div class="paragraph"><p>When applying <em>map</em>(<em>f</em>), Spark assumes that function <em>f</em> changes
+not only values but also keys (Spark does not analyze your function code).
+If an input RDD has all pairs with the same key
+in the same partition, an output RDD is assumed to not retain this property.
+Therefore, Spark may have to reorganized data into new partitions for subsequent operations&#8201;&#8212;&#8201;this process is called <em>shuffling</em> and is expensive.</p></div>
+<div class="paragraph"><p>With <em>mapValues</em> and <em>flatMapValues</em>, Spark knows that keys cannot be affected by the transformations.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="supporting-actions-for-pair-rdds">
+<h2>"Supporting" Actions for Pair RDDs</h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>lookup</strong>(<em>key</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns a <em>Seq</em> of values in the source RDD for a given key.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>collectAsMap</strong>()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns a <em>Map</em> of key-value pairs in the source RDD.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Only use <em>collectAsMap()</em> when an RDD does not contain multiple pairs with the same key.
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="lookup" src="images/spark/key-value-pairs/pair-rdd/lookup.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Only use <em>collectAsMap()</em> when an RDD does not contain multiple pairs with the same key.
+Otherwise, you may "lose" data in the resulting <em>Map</em>, which can only contain unique keys.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="example">
+<h2>Example</h2>
+<div class="paragraph"><p><strong>Find ratings of movies released in 2014</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies" src="images/spark/key-value-pairs/pair-rdd/movies.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable[(Int,Option[Float])]("killr_video","movies")
+  .select("release_year","rating")
+  .mapValues(v =&gt; v.getOrElse(0.0))
+  .lookup(2014)
+  .foreach(println)
+
+// Sample output:
+// 6.3
+// 6.0
+// 5.4</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This example should be straightforward!</p></div>
+<div class="paragraph"><p>Notice how we obtained a pair RDD in this example by specifying how data should be retrieved from
+Cassandra and converted into tuples of the form <em>(Int,Option[Float])</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-key-value-pairs-pair-rdd-aggregation">
+<h2>Computing Per-Key Aggregates</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Aggregating values with the same key is a common task<div class="ulist">
+<ul>
+<li>Statistical analysis, summarization</li>
+<li>The <em>WordCount</em> problem is classic</li>
+</ul>
+</div></p></li>
+<li><p>
+<em>KillrVideo</em> challenges for this presentation<div class="ulist">
+<ul>
+<li>Count how many movies featuring Johnny Depp were released per year</li>
+<li>Find the highest rated movie featuring Johnny Depp for each year</li>
+<li>Compute an average rating of movies featuring Johnny Depp for every year</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>We are not going to cover all operations for per-key aggregation that are available
+in Spark. Instead, we will look at the four most commonly used operations with detailed examples.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="transformation-em-reducebykey-em">
+<h2>Transformation <em>reduceByKey</em></h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>reduceByKey</strong>(<em>f</em>, [<em>numTasks</em>])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD of (<em>K</em>,<em>V</em>)  pairs is formed by aggregating values for each key
+in the source RDD of (<em>K</em>,<em>V</em>) pairs. The reduce function <em>f</em>: <em>V x V &#8594; V</em>
+takes two values of type <em>V</em> and returns a new value of type <em>V</em>. The optional
+<em>numTasks</em> parameter specifies the number of reduce tasks to use in computation.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock center">
+<div class="content">
+<img alt="reduce by key" src="images/spark/key-value-pairs/pair-rdd-aggregation/reduce-by-key.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The simplest transformation available. Note that the resulting RDD
+has the same type as the source RDD.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Count how many movies featuring Johnny Depp were released per year</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/key-value-pairs/pair-rdd-aggregation/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .where("actor = 'Johnny Depp'")
+  .select("release_year")
+  .as( (year:Int) =&gt; (year,1) )
+  .reduceByKey(_ + _)
+  .collect
+  .foreach(println)
+
+// Sample output:
+// (2010,2)
+// (2000,3)
+// (2014,3)</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The first challenge solution.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="transformation-em-foldbykey-em">
+<h2>Transformation <em>foldByKey</em></h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>foldByKey</strong>(<em>zeroValue</em>, [<em>numTasks</em>])(<em>f</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD of (<em>K</em>,<em>V</em>)  pairs is formed by aggregating values for each key
+in the source RDD of (<em>K</em>,<em>V</em>) pairs. The <em>zeroValue</em> parameter is
+a neutral value, which can be "added" to the result an arbitrary number of times without affecting it
+(e.g., <em>Nil</em> for list concatenation, <em>0</em> for addition, or <em>1</em> for multiplication).
+The associative function <em>f</em>: <em>V x V &#8594; V</em>
+takes a partially aggregated result and a value from the source RDD and returns a new result.
+The optional
+<em>numTasks</em> parameter specifies the number of reduce tasks to use in computation.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock center">
+<div class="content">
+<img alt="fold by key" src="images/spark/key-value-pairs/pair-rdd-aggregation/fold-by-key.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This transformation is simpler than it looks like!
+Conceptually, think about this transformation as if you take one value at a time and
+"merge" it with a partially aggregated result. The value and the aggregated result must be of the
+same type.</p></div>
+<div class="paragraph"><p>See transformation <em>aggregateByKey</em> (not covered here) if you need an aggregated result type to be different from an input value type.
+Alternatively, the next transformation <em>combineByKey</em> in this presentation will do it, too.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Find the highest rated movie featuring Johnny Depp for each year</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/key-value-pairs/pair-rdd-aggregation/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .where("actor = 'Johnny Depp'")
+  .select("release_year","title","rating")
+  .as( (y:Int,t:String,r:Option[Float]) =&gt; (y,(t,r)) )
+  .filter{case (y,(t,r)) =&gt; r.isDefined}
+  .mapValues{case (t,r) =&gt; (t,r.get)}
+  .foldByKey( ("",0.0f) ){ case ((maxT,maxR),(t,r)) =&gt;
+                               if (maxR &lt; r) (t,r)
+                               else (maxT,maxR) }
+  .collect.foreach(println)
+
+// Sample output:
+// (2010,(Alice in Wonderland,6.5))
+// (2000,(Before Night Falls,7.3))
+// (2014,(Transcendence,6.3))</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The second challenge solution.</p></div>
+<div class="paragraph"><p>Note that values in the source RDD are pairs themselves, each one consisting of movie <em>title</em> and <em>rating</em>.</p></div>
+<div class="paragraph"><p><em>zeroValue</em> = ("",0.0f); empty <em>title</em> and zero rating. The <em>foldByKey</em> argument function
+compares a movie with the currently largest rating and a new movie seen in the dataset, and returns a winning movie.
+Not much different from finding the largest element in a list.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="transformation-em-combinebykey-em">
+<h2>Transformation <em>combineByKey</em></h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>combineByKey</strong>(
+<em>createCombinerF</em>,
+<em>mergeValueF</em>,
+<em>mergeCombinersF</em>,
+[<em>numTasks</em>])</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph"><p>A new RDD of (<em>K</em>,<em>C</em>)  pairs is formed by aggregating values for each key
+in the source RDD of (<em>K</em>,<em>V</em>) pairs. Aggregation is guided by three functions:</p></div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<em>createCombinerF</em>: <em>V &#8594; C</em> returns an aggregate value (combiner) of a desired type from a single value;
+</li>
+<li>
+<em>mergeValueF</em>: <em>C x V &#8594; C</em> returns a new aggregate value (combiner) for a key by merging
+the current aggregate value (combiner) for this key with a new value;
+</li>
+<li>
+<em>mergeCombinersF</em>: <em>C x C &#8594; C</em> returns a new aggregate value (combiner)  for a key from
+two partial aggregates (combiners) for this key.
+</li>
+</ol>
+</div>
+<div class="paragraph"><p>The optional
+<em>numTasks</em> parameter specifies the number of reduce tasks to use in computation.</p></div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Most general transformation for per-key aggregation! The aggregate data type <em>C</em> can be different from
+the value data type <em>V</em>. Very powerful transformation but also a bit more complex.</p></div>
+<div class="paragraph"><p>This transformation can solve all our challenges if we want to.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Compute an average rating of movies featuring Johnny Depp for every year</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/key-value-pairs/pair-rdd-aggregation/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable[(Int,Option[Float])]("killr_video","movies_by_actor")
+  .where("actor = 'Johnny Depp'").select("release_year","rating")
+  .filter(_._2.isDefined).mapValues(r =&gt; r.get)
+  .combineByKey(
+   (rating:Float)                     =&gt;(rating, 1),
+   (res:(Float,Int),rating:Float)     =&gt;(res._1 + rating, res._2 + 1),
+   (res1:(Float,Int),res2:(Float,Int))=&gt;(res1._1 + res2._1, res1._2 + res2._2)
+  )
+  .mapValues{case (sum,count) =&gt; val avg = sum / count; f"$avg%1.1f"}
+  .collect.foreach(println)
+
+// Sample output:
+// (2010,6.3)
+// (2000,6.9)
+// (2014,5.9)</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The third challenge solution.</p></div>
+<div class="paragraph"><p>The crux of this example is transformation <em>combineByKey</em> with three anonymous functions passed to it.</p></div>
+<div class="paragraph"><p>The first function:
+A value represented by <em>rating</em> in the source RDD is mapped to a tuple holding (<em>rating</em>, 1); this combiner holds
+the current sum of ratings (= rating itself) and a number of ratings (= 1).</p></div>
+<div class="paragraph"><p>The second function:
+Merges a combiner with a new value to get a new combiner. In our case, we need to add a rating to the sum and
++1 to the count.</p></div>
+<div class="paragraph"><p>The third function:
+Merges two combiners by adding their sums and counts, respectively.</p></div>
+<div class="paragraph"><p>The actual average is computed by the next transformation <em>mapValues</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="action-em-countbykey-em">
+<h2>Action <em>countByKey</em></h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Action</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>countByKey</strong>([<em>numTasks</em>])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns a <em>Map</em> of (<em>K</em>,<em>N</em>) pairs, where <em>N</em> is the number of elements for each key in the
+source RDD of (<em>K</em>,<em>V</em>) pairs.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock center">
+<div class="content">
+<img alt="count by key" src="images/spark/key-value-pairs/pair-rdd-aggregation/count-by-key.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>As simple as it gets.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Count how many movies featuring Johnny Depp were released per year</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/key-value-pairs/pair-rdd-aggregation/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .where("actor = 'Johnny Depp'")
+  .select("release_year")
+  .as( (year:Int) =&gt; (year,1) )
+  .countByKey
+  .foreach(println)
+
+// Sample output:
+// (2010,2)
+// (2000,3)
+// (2014,3)</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Another way to solve the first challenge.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-key-value-pairs-pair-rdd-grouping-sorting">
+<h2>Key-Based Grouping and Sorting</h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:50%" />
+<col style="width:50%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Grouping values with the same key</th>
+<th class="tableblock halign-left valign-top">Sorting values using keys</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>Reorganizing data by a new key</li>
+<li>Post-processing per-key groups</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>Generating special-purpose datasets</li>
+<li>Generating reports that require ordering</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li><p>
+<em>KillrVideo</em> challenges for this presentation<div class="ulist">
+<ul>
+<li>Output movies featuring Johnny Depp grouped by genre</li>
+<li>Output movies with Johnny Depp and movies with Tom Hanks co-grouped by year</li>
+<li>Output movies from 2010s featuring Johnny Depp ordered by rating</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>We are not going to cover all operations for key-based grouping and sorting that are available
+in Spark. Instead, we will look at a few common transformations with detailed examples.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="transformation-em-groupbykey-em">
+<h2>Transformation <em>groupByKey</em></h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>groupByKey</strong>([<em>numTasks</em>])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD of (<em>K</em>,<em>Iterable&lt;V&gt;</em>) pairs is formed by grouping values for each key
+in the source RDD of (<em>K</em>,<em>V</em>) pairs. The optional
+<em>numTasks</em> parameter specifies the number of reduce tasks to use in computation.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock center">
+<div class="content">
+<img alt="group by key" src="images/spark/key-value-pairs/pair-rdd-grouping-sorting/group-by-key.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Output movies featuring Johnny Depp grouped by genre</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/key-value-pairs/pair-rdd-grouping-sorting/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable[(String,Int,Set[String])]("killr_video","movies_by_actor")
+  .where("actor = 'Johnny Depp'")
+  .select("title","release_year","genres")
+  .flatMap{case (t,y,gs) =&gt; gs.map( g =&gt;(g, t + ", " + y) )}
+  .groupByKey()
+  .collect
+  .foreach(println)
+
+// Sample output for one group:
+// (Family,CompactBuffer(
+//         Alice Through the Looking Glass, 2016,
+//         Alice in Wonderland, 2010,
+//         Charlie and the Chocolate Factory, 2005,
+//         Finding Neverland, 2004))</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The first challenge solution.</p></div>
+<div class="paragraph"><p>Note that we use the <em>flatMap</em> transformation to generate key-value pairs this time.
+Inside <em>flatMap</em>, <em>map</em> is not a Spark transformation but rather a method in the Scala Set API.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="transformations-em-cogroup-em-and-em-groupwith-em">
+<h2>Transformations <em>cogroup</em> and <em>groupWith</em></h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>cogroup</strong>(<em>otherRDD</em>, [<em>numTasks</em>])
+or <strong>groupWith</strong>(<em>otherRDD</em>, [<em>numTasks</em>])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD of (<em>K</em>,(<em>Iterable&lt;V&gt;</em>, <em>Iterable&lt;W&gt;</em>)) pairs is formed by grouping values for each key
+from the source RDD of (<em>K</em>,<em>V</em>) pairs and the <em>otherRDD</em> of (<em>K</em>,<em>W</em>) pairs.
+The optional
+<em>numTasks</em> parameter specifies the number of reduce tasks to use in computation.
+Both <em>cogroup</em> and <em>groupWith</em> refer to the same transformation.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock center">
+<div class="content">
+<img alt="cogroup" src="images/spark/key-value-pairs/pair-rdd-grouping-sorting/cogroup.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Output movies with Johnny Depp and movies with Tom Hanks co-grouped by year</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/key-value-pairs/pair-rdd-grouping-sorting/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>val johnnyMovies = sc.cassandraTable("killr_video","movies_by_actor")
+                     .where("actor = 'Johnny Depp'")
+                     .keyBy(row =&gt; row.getInt("release_year"))
+val tomMovies = sc.cassandraTable("killr_video","movies_by_actor")
+                     .where("actor = 'Tom Hanks'")
+                     .keyBy(row =&gt; row.getInt("release_year"))
+johnnyMovies.cogroup(tomMovies)
+            .collect.foreach(println)
+
+// Sample output for one group:
+// (2010,CompactBuffer(
+//         CassandraRow{actor: Johnny Depp, ..., title: The Tourist},
+//         CassandraRow{actor: Johnny Depp, ..., title: Alice in Wonderland})
+//       CompactBuffer(
+//         CassandraRow{actor: Tom Hanks, ..., title: Toy Story 3}))</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The second challenge solution.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="transformation-em-sortbykey-em">
+<h2>Transformation <em>sortByKey</em></h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>sortByKey</strong>(
+[<em>ascending</em>],
+[<em>numTasks</em>])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD of (<em>K</em>,<em>V</em>) pairs is formed by sorting pairs in the source RDD of (<em>K</em>,<em>V</em>) pairs
+based on keys in ascending (default) or descending order. The <em>K</em> type must implement trait <em>Ordered</em>.
+The optional <em>ascending</em> parameter has the default value of <em>true</em>.
+The optional
+<em>numTasks</em> parameter specifies the number of reduce tasks to use in computation.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock center">
+<div class="content">
+<img alt="sort by key" src="images/spark/key-value-pairs/pair-rdd-grouping-sorting/sort-by-key.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Output movies from 2010s featuring Johnny Depp ordered by rating</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/key-value-pairs/pair-rdd-grouping-sorting/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .where("actor = 'Johnny Depp' AND release_year &gt; 2010")
+  .select("title","release_year","rating")
+  .as( (t:String, y:Int, r:Option[Float]) =&gt; (r.getOrElse(0.0f),(t,y)) )
+  .sortByKey(false)
+  .collect
+  .foreach(println)
+
+// Sample output:
+// (7.3,(Rango,2011))
+// (6.7,(Pirates of the Caribbean: On Stranger Tides,2011))
+// (6.5,(The Lone Ranger,2013))
+// (6.3,(Transcendence,2014))</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The third challenge solution.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="grouping-and-sorting-best-practices">
+<h2>Grouping and Sorting Best Practices</h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:50%" />
+<col style="width:50%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Grouping</th>
+<th class="tableblock halign-left valign-top">Sorting</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>Expensive on large datasets</li>
+<li>Do not use grouping for aggregation or joins</li>
+<li>Grouping transformations may result in large key-value pairs</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>Expensive on large datasets</li>
+<li>Prefer smaller datasets</li>
+<li>Prefer Cassandra clustering column ordering to sorting</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Both are expensive because they require shuffling and do not reduce the size of a dataset</p></div>
+<div class="paragraph"><p>Do not use grouping for aggregation or joins. Use aggregation/join transformations instead, because they are more efficient for the purpose.</p></div>
+<div class="paragraph"><p>Grouping transformations may result in large key-value pairs.
+It is important to remember that any given pair must fit into memory.
+An RDD can spill to disk across keys but a key-value pair cannot.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-key-value-pairs-pair-rdd-joins">
+<h2>Key-Based Joins</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Joins are some of the most useful operations on Pair RDDs<div class="ulist">
+<ul>
+<li>Combining values from two or more Pair RDDs based on key equality</li>
+<li>Evolving schema, validating data, generating new datasets</li>
+<li>Generally expensive operations</li>
+</ul>
+</div></p></li>
+<li><p>
+<em>KillrVideo</em> challenges for this presentation<div class="ulist">
+<ul>
+<li>Perform schema evolution for table <em>playlists_by_user</em></li>
+<li>Validate referential integrity constraints for table <em>playlists_by_user</em></li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Joins are generally expensive operations because they may deal with large
+datasets, may return large result sets, and require data shuffling (and therefore, disk access).
+No matter how efficient Spark is, joins are not to be used for processing day-to-day
+user transactions in an operational data center. Instead, data should be modeled in Cassandra
+such that joins are not required.
+Main use cases include database schema evolution, periodic validation of data stored in Cassandra, and
+generating new datasets for further, more expensive analysis in an analytical data center.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="transformation-em-join-em">
+<h2>Transformation <em>join</em></h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>join</strong>(<em>otherRDD</em>,[<em>numTasks</em>])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD of (<em>K</em>,(<em>V</em>, <em>W</em>)) pairs is formed by combining all possible values for each key
+from the source RDD of (<em>K</em>,<em>V</em>) pairs and the <em>otherRDD</em> of (<em>K</em>,<em>W</em>) pairs.
+The optional
+<em>numTasks</em> parameter specifies the number of reduce tasks to use in computation.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock center">
+<div class="content">
+<img alt="join" src="images/spark/key-value-pairs/pair-rdd-joins/join.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This is a classic inner join.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="transformation-em-leftouterjoin-em">
+<h2>Transformation <em>leftOuterJoin</em></h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>leftOuterJoin</strong>(<em>otherRDD</em>,[<em>numTasks</em>])</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph"><p>A new RDD of (<em>K</em>,(<em>V</em>, <em>Option</em>[<em>W</em>])) pairs is formed by combining values for each key
+from the source RDD of (<em>K</em>,<em>V</em>) pairs and the <em>otherRDD</em> of (<em>K</em>,<em>W</em>) pairs as:</p></div>
+<div class="ulist">
+<ul>
+<li>(<em>K</em>,(<em>V</em>, <em>Some</em>[<em>W</em>])) pairs if a key exists in both RDDs;</li>
+<li>(<em>K</em>,(<em>V</em>, <em>None</em>)) pairs if a key only exists in the source RDD.</li>
+</ul>
+</div>
+<div class="paragraph"><p>The optional
+<em>numTasks</em> parameter specifies the number of reduce tasks to use in computation.</p></div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock center">
+<div class="content">
+<img alt="left outer join" src="images/spark/key-value-pairs/pair-rdd-joins/left-outer-join.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Useful to, for example, generate a report about users and their uploaded movies
+when the report should also contain users who never uploaded any movie.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="transformation-em-rightouterjoin-em">
+<h2>Transformation <em>rightOuterJoin</em></h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>rightOuterJoin</strong>(<em>otherRDD</em>,[<em>numTasks</em>])</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph"><p>A new RDD of (<em>K</em>,(<em>Option</em>[<em>V</em>],<em>W</em>)) pairs is formed by combining values for each key
+from the source RDD of (<em>K</em>,<em>V</em>) pairs and the <em>otherRDD</em> of (<em>K</em>,<em>W</em>) pairs as:</p></div>
+<div class="ulist">
+<ul>
+<li>(<em>K</em>,(<em>Some</em>[<em>V</em>], <em>W</em>)) pairs if a key exists in both RDDs;</li>
+<li>(<em>K</em>,(<em>None</em>, <em>W</em>)) pairs if a key only exists in <em>otherRDD</em>.</li>
+</ul>
+</div>
+<div class="paragraph"><p>The optional
+<em>numTasks</em> parameter specifies the number of reduce tasks to use in computation.</p></div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock center">
+<div class="content">
+<img alt="right outer join" src="images/spark/key-value-pairs/pair-rdd-joins/right-outer-join.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Similar to the left outer join but the direction is now switched.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="transformation-em-fullouterjoin-em">
+<h2>Transformation <em>fullOuterJoin</em></h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>fullOuterJoin</strong>(<em>otherRDD</em>,[<em>numTasks</em>])</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph"><p>A new RDD of (<em>K</em>,(<em>Option</em>[<em>V</em>],<em>Option</em>[<em>W</em>])) pairs is formed by combining values for each key
+from the source RDD of (<em>K</em>,<em>V</em>) pairs and the <em>otherRDD</em> of (<em>K</em>,<em>W</em>) pairs as:</p></div>
+<div class="ulist">
+<ul>
+<li>(<em>K</em>,(<em>Some</em>[<em>V</em>], <em>Some</em>[<em>W</em>])) pairs if a key exists in both RDDs;</li>
+<li>(<em>K</em>,(<em>Some</em>[<em>V</em>], <em>None</em>)) pairs if a key only exists in the source RDD;</li>
+<li>(<em>K</em>,(<em>None</em>, <em>Some</em>[<em>W</em>])) pairs if a key only exists in <em>otherRDD</em>.</li>
+</ul>
+</div>
+<div class="paragraph"><p>The optional
+<em>numTasks</em> parameter specifies the number of reduce tasks to use in computation.</p></div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock center">
+<div class="content">
+<img alt="full outer join" src="images/spark/key-value-pairs/pair-rdd-joins/full-outer-join.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The outer join is the most expensive join as it returns the largest result set.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="challenge-1-schema-evolution">
+<h2>Challenge 1: Schema Evolution</h2>
+<div class="paragraph"><p><strong>Step 1: Adding two new columns to <em>playlists_by_user</em></strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>ALTER TABLE playlists_by_user ADD genres SET&lt;TEXT&gt;;
+
+ALTER TABLE playlists_by_user ADD rating FLOAT;</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="playlists by user" src="images/spark/key-value-pairs/pair-rdd-joins/playlists_by_user.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Schema evolution is common when application or query requirements change.
+To avoid joins between tables when processing user requests, you should rather add all
+necessary information into one table.</p></div>
+<div class="paragraph"><p>In Step 1, we are adding two columns to the table definition, which will update table metadata.
+Data is unchanged and <em>null</em> values will be returned for the new columns in every row.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Step 2: Adding information about movie genres and ratings</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="challenge1" src="images/spark/key-value-pairs/pair-rdd-joins/challenge1.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>val playlists =
+    sc.cassandraTable("killr_video","playlists_by_user")
+      .select("user_id","playlist_name","release_year","title","movie_id")
+      .as((u:java.util.UUID,p:String,y:Int,t:String,m:java.util.UUID) =&gt;
+          (m,(u,p,y,t)))
+
+val movies =
+    sc.cassandraTable("killr_video","movies")
+      .select("movie_id","genres","rating")
+      .as((m:java.util.UUID,g:Set[String],r:Option[Float]) =&gt;
+          (m,(g,r)))
+
+playlists.join(movies)
+         .map{case (m,((u,p,y,t),(g,r))) =&gt; (u,p,y,t,m,g,r)}
+         .saveToCassandra("killr_video","playlists_by_user")</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Step 2 takes care of inserting values for the new columns in table <em>playlists_by_user</em>
+by retrieving them from table <em>movies</em>. The join is performed to match rows with the same movies
+from both tables.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="challenge-2-data-validation">
+<h2>Challenge 2: Data Validation</h2>
+<div class="paragraph"><p><strong>Do playlists reference non-existing movies?</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="challenge2" src="images/spark/key-value-pairs/pair-rdd-joins/challenge2.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>val playlists =
+    sc.cassandraTable("killr_video","playlists_by_user")
+      .keyBy(row =&gt; row.getUUID("movie_id"))
+
+val movies =
+    sc.cassandraTable("killr_video","movies")
+      .select("movie_id")
+      .keyBy(row =&gt; row.getUUID("movie_id"))
+
+playlists.leftOuterJoin(movies)
+         .filter{case (m,(rowP,rowM)) =&gt; !rowM.isDefined}
+         .map{case (m,(rowP,rowM)) =&gt; rowP}
+         .collect.foreach(println)
+
+// Sample output:
+// CassandraRow{user_id: 709e42f0-5f25-4551-9d85-6e3ad39d6cde,
+//              playlist_name: Pirate Movies,
+//              release_year: 2017,
+//              title: Pirates of DataStax, ...}</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Periodic data validation is important in Cassandra. For example, data
+may be duplicated in multiple tables and we want to make sure that all
+copies are the same. Or a column in one table may reference a key in another
+table and we want to make sure that
+we always reference an existing value (aka <em>referential integrity constraint</em>).</p></div>
+<div class="paragraph"><p>In this example, we are validating that any movie in table <em>playlists_by_user</em> is
+also present in table <em>movies</em>. We are finding violations by using a left outer join
+and outputing those Cassandra rows from <em>playlists_by_user</em> that do not have a matching
+movie in table <em>movies</em> (such as movie "Pirates of DatStax"!).</p></div>
+<div class="paragraph"><p>Note that this is not the only possible solution for this challenge. Another, potentially
+more efficient approach would be computing a set-difference between two sets of movies.
+This is something we will explore in another presentation that covers transformation <em>subtractByKey</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-key-value-pairs-pair-rdd-set-operations">
+<h2>Union, Intersection, and Difference</h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:11%" />
+<col style="width:22%" />
+<col style="width:33%" />
+<col style="width:33%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Operation</th>
+<th class="tableblock halign-left valign-top">Venn Diagram</th>
+<th class="tableblock halign-left valign-top">Generic RDD API</th>
+<th class="tableblock halign-left valign-top">Key-Value Pair RDD API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Union</strong></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="imageblock center">
+<div class="content">
+<img alt="union venn" src="images/spark/key-value-pairs/pair-rdd-set-operations/union-venn.svg" />
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li><em>union</em>(<em>otherRDD</em>)</li>
+<li>Duplicates: Yes</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>N/A</li>
+<li>Can be implemented</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Intersection</strong></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="imageblock center">
+<div class="content">
+<img alt="intersection venn" src="images/spark/key-value-pairs/pair-rdd-set-operations/intersection-venn.svg" />
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li><em>intersection</em>(<em>otherRDD</em>)</li>
+<li>Duplicates: No</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>N/A</li>
+<li>Can be implemented</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Difference</strong></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="imageblock center">
+<div class="content">
+<img alt="difference venn" src="images/spark/key-value-pairs/pair-rdd-set-operations/difference-venn.svg" />
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li><em>subtract</em>(<em>otherRDD</em>)</li>
+<li>Duplicates: Yes</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li><em>subtractByKey</em>(<em>otherRDD</em>)</li>
+<li>Duplicates: Yes</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Spark set operations, unlike the mathematical set operations, do not always eliminate
+duplicates in the result. Duplicate elimination can be done with transformation <em>distinct</em>().</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="key-based-union">
+<h2>Key-Based Union</h2>
+<div class="paragraph"><p><strong>Sample implementation for <em>union-compatible</em> Pair RDDs</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>val A = sc.parallelize(Array(("k1","v1"), ("k2","v2"), ("k1","v3"), ("k3","v4")))
+val B = sc.parallelize(Array(("k1","w1"), ("k2","w2"), ("k2","w3"), ("k4","w4")))
+
+A.union(B)</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="union" src="images/spark/key-value-pairs/pair-rdd-set-operations/union.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>A key-based union can be readily implemented using transformation <em>union</em> for generic RDDs.</p></div>
+<div class="paragraph"><p>Notice the union-campatibility requirement. This means that both Pair RDDs must have
+key-value pairs of the same form and type, such as (K,V).</p></div>
+<div class="paragraph"><p>Duplicates are allowed.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="key-based-intersection">
+<h2>Key-Based Intersection</h2>
+<div class="paragraph"><p><strong>Sample implementation for <em>union-compatible</em> Pair RDDs</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>val A = sc.parallelize(Array(("k1","v1"), ("k2","v2"), ("k1","v3"), ("k3","v4")))
+val B = sc.parallelize(Array(("k1","w1"), ("k2","w2"), ("k2","w3"), ("k4","w4")))
+
+A.groupByKey
+ .join(B.groupByKey)
+ .flatMapValues{case (aList,bList) =&gt; aList ++ bList}</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="intersection" src="images/spark/key-value-pairs/pair-rdd-set-operations/intersection.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>A key-based intersection implementation is a bit more involved. <em>groupByKey</em> prepares data for joining, such that
+each resulting RDD can only have one pair with any given key. This ensures that the <em>join</em> result also has only one
+pair with any given key. <em>flatMapValues</em> concatenates lists of values from both <em>A</em> and <em>B</em> for each key
+and generates key-value pairs in the format of input datasets.</p></div>
+<div class="paragraph"><p>Notice the union-campatibility requirement. This means that both Pair RDDs must have
+key-value pairs of the same form and type, such as (K,V).</p></div>
+<div class="paragraph"><p>Duplicates are allowed.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="key-based-difference">
+<h2>Key-Based Difference</h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:20%" />
+<col style="width:80%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>subtractByKey</strong>(<em>otherRDD</em>,[<em>numTasks</em>])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD of (<em>K</em>,<em>V</em>) pairs is formed by those pairs
+from the source RDD of (<em>K</em>,<em>V</em>) pairs whose keys are not present in the <em>otherRDD</em> of (<em>K</em>,<em>W</em>) pairs.
+The optional
+<em>numTasks</em> parameter specifies the number of reduce tasks to use in computation.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock center">
+<div class="content">
+<img alt="difference" src="images/spark/key-value-pairs/pair-rdd-set-operations/difference.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Input RDDs must have keys of the same type (e.g., <em>K</em>) but values may be of different types (e.g., <em>V</em> and <em>W</em>)</p></div>
+<div class="paragraph"><p>Duplicates are allowed.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="challenge-data-validation">
+<h2>Challenge: Data Validation</h2>
+<div class="paragraph"><p><strong>Do playlists reference non-existing movies?</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="challenge" src="images/spark/key-value-pairs/pair-rdd-set-operations/challenge.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>val playlists =
+    sc.cassandraTable("killr_video","playlists_by_user")
+      .keyBy(row =&gt; row.getUUID("movie_id"))
+
+val movies =
+    sc.cassandraTable("killr_video","movies")
+      .select("movie_id")
+      .keyBy(row =&gt; row.getUUID("movie_id"))
+
+playlists.subtractByKey(movies)
+         .collect.foreach(println)
+
+// Sample output:
+// CassandraRow{user_id: 709e42f0-5f25-4551-9d85-6e3ad39d6cde,
+//              playlist_name: Pirate Movies,
+//              release_year: 2017,
+//              title: Pirates of DataStax, ...}</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Periodic data validation is important in Cassandra. For example, data
+may be duplicated in multiple tables and we want to make sure that all
+copies are the same. Or a column in one table may reference a key in another
+table and we want to make sure that
+we always reference an existing value (aka <em>referential integrity constraint</em>).</p></div>
+<div class="paragraph"><p>In this example, we are validating that any movie in table <em>playlists_by_user</em> is
+also present in table <em>movies</em>. We are finding violations by computing a difference
+and outputing those Cassandra rows from <em>playlists_by_user</em> that do not have a matching
+movie in table <em>movies</em> (such as movie "Pirates of DatStax"!).</p></div>
+<div class="paragraph"><p>Note that you might have seen this challenge before. It was previously solved
+using <em>leftOuterJoin</em>. The current solution uses <em>subtractByKey</em>, which should
+result in a better performance.</p></div>
+</div>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">
+<i class="icon-chevron-with-circle-left"></i>
+</a>
+<a class="deck-next-link" href="#" title="Next">
+<i class="icon-chevron-with-circle-right"></i>
+</a>
+</div>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/d3.v2.js"></script>
+<script src="deck.js/jquery-ui.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/animation/deck.animation.js"></script>
+<script src="deck.js/extensions/deck.js-notes/deck.notes.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/clone/deck.clone.js"></script>
+<script src="deck.js/extensions/svg/svg.min.js"></script>
+<script src="js/course.js"></script>
+<footer>
+<div class="flex-element deck-course">
+<p>&copy; 2016 DataStax. Use only with permission. &bull;
+<span class="course-title">The Utility of Key/Value Pairs</span></p>
+</div>
+<div class="flex-element deck-brand">
+<a href="http://academy.datastax.com" target="blank">DataStax Academy</a>
+</div>
+<div class="deck-progressbar">
+<span></span>
+</div>
+</footer>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+      $.deck('disableScale');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+    $(document).bind('deck.change', function(event, from, to) {
+      var width = to / ($.deck('getSlides').length - 1) * 100;
+      $('.deck-progressbar span').css('width', width + '%');
+    });
+  //]]>
+</script>
+</body>
+</html>

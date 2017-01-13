@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.2" name="generator" />
+<title>Optimizing With the Spark/Cassandra Connector</title>
+<link href="deck.js/themes/style/font.css" rel="stylesheet" />
+<style>
+.conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 1.2em; height: 1.2em; font-size: 0.9em; font-weight: bold; line-height: 1.2; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -0.1em; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+.colist table td:first-of-type { padding-right: 0.25em; }
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{font-weight: normal}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#00}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/datastax.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Optimizing With the Spark/Cassandra Connector</h1>
+</section>
+<section class="slide" id="spark-spark-cassandra-connector-optimizations-counting-rows">
+<h2>The Challenge: Suboptimal Code</h2>
+<div class="paragraph"><p><strong>Counting movies with Johnny Depp that were released before 2015</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector-optimizations/counting-rows/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .where("actor = 'Johnny Depp' AND release_year &lt; 2015")
+  .count
+
+// Sample output: 49</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Counting rows in a Cassandra table is quite simple but there is one important trick
+you should know about.</p></div>
+<div class="paragraph"><p>This code is suboptimal: it retrieves data from Cassandra into Spark and calls
+Spark&#8217;s <em>count</em> action. We get the correct result but we should be able to solve this problem in
+a more efficient manner using <em>Spark-Cassandra Connector</em> API. Let Cassandra do the counting for us.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="counting-rows-in-a-cassandra-table">
+<h2>Counting Rows in a Cassandra Table</h2>
+<div class="paragraph"><p><strong>Spark-Cassandra Connector API</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Action</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>cassandraCount</strong>()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns a number of rows in the source Cassandra RDD.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>When called on a Cassandra RDD created by <em>cassandraTable</em>, <em>cassandraCount</em>
+instructs Cassandra (rather than Spark) to count rows.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="our-challenge-solution">
+<h2>Our Challenge Solution</h2>
+<div class="paragraph"><p><strong>Counting movies with Johnny Depp that were released before 2015</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector-optimizations/counting-rows/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .where("actor = 'Johnny Depp' AND release_year &lt; 2015")
+  .cassandraCount
+
+// Sample output: 49</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This solution is better: Cassandra does row counting instead of retrieving rows and handing them to Spark for counting.
+The difference will be quite noticeable when counting a large number of rows.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="however">
+<h2>However &#8230;&#8203;</h2>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector-optimizations/counting-rows/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="title"><em>cassandraCount is inapplicable</em></div>
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .filter(row =&gt; row.getFloat("rating")&gt; 6.0)
+  .count</code></pre>
+</div>
+</div>
+<div class="listingblock left">
+<div class="title"><em>count is a better choice</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val movies = sc.cassandraTable("killr_video","movies_by_actor")
+               .select("release_year")
+               .where("actor = 'Johnny Depp' AND release_year &lt; 2015")
+               .cache
+
+println(movies.count)
+movies.keyBy(row =&gt; row.getInt("release_year"))
+      .countByKey.foreach(println)</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In the first example, <em>cassandraCount</em> cannot replace <em>count</em> because we are using <em>filter</em> that
+transforms a Cassandra RDD into a Spark RDD.</p></div>
+<div class="paragraph"><p>We can modify the second example to use <em>cassandraCount</em> but it is likely to make our code
+less efficient because the second action (<em>countByKey</em>) will require to retrieve rows from Cassandra anyway.
+In this case, it is better to retrieve and cache data to perform both actions using Spark.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-spark-cassandra-connector-optimizations-grouping-rows">
+<h2>The Challenge: Suboptimal Code</h2>
+<div class="paragraph"><p><strong>Grouping movies by actor and release year</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector-optimizations/grouping-rows/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .select("actor","release_year","title")
+  .as((a:String, y:Int, t:String) =&gt; ((a,y),t))
+  .groupByKey
+  .takeSample(false, 100)
+  .foreach(println)
+
+// Sample output:
+// ((Johnny Depp,2010),CompactBuffer(The Tourist, Alice in Wonderland))
+// ((Johnny Depp,2014),CompactBuffer(Into the Woods, Transcendence, Tusk))</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This code requires expensive shuffling.
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This code is suboptimal: it retrieves data from Cassandra into Spark and calls
+Spark&#8217;s <em>groupByKey</em> to solve the problem. We get the correct result but we should be able to solve this problem in
+a more efficient manner using <em>Spark-Cassandra Connector</em> API.</p></div>
+<div class="paragraph"><p>Intuitively, Cassandra stores rows in a table in partitions that group rows by a partition key (<em>actor</em> in this example).
+Furthermore, rows within a partition are also grouped by clustering columns. Instead of asking Spark to do grouping for us,
+we should ask Cassandra to give us already grouped data. By doing this, we can avoid expensive shuffling!</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="grouping-rows-by-primary-key-columns">
+<h2>Grouping Rows by Primary Key Columns</h2>
+<div class="paragraph"><p><strong>Spark-Cassandra Connector API</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spanByKey</strong>()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD of (<em>K</em>,<em>Seq[V]</em>) pairs is formed by grouping values for each key
+in the source Cassandra-based RDD of (<em>K</em>,<em>V</em>) pairs.
+Grouping is performed on the Cassandra side based on primary key columns.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spanBy</strong>(<em>f</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD of (<em>K</em>,<em>Seq[V]</em>) pairs is formed by grouping elements of type <em>V</em>
+in the source Cassandra-based RDD for each key <em>K</em> as defined by function <em>f</em>.
+Grouping is performed on the Cassandra side based on primary key columns.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<em>spanByKey</em> and <em>spanBy</em> are only applicable when grouping by a table partition key
+and, optionally, one or more clustering columns. The grouping key must respect the natural clustering key order
+as defined in the table schema.
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>When called on a Cassandra RDD created by <em>cassandraTable</em>, these transformations
+instruct Cassandra (rather than Spark) to group data by a partition key or a <strong>proper</strong> subset of a primary key.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="our-challenge-solution-1">
+<h2>Our Challenge Solution 1</h2>
+<div class="paragraph"><p><strong>Grouping movies by actor and release year</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector-optimizations/grouping-rows/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .select("actor","release_year","title")
+  .as((a:String, y:Int, t:String) =&gt; ((a,y),t))
+  .spanByKey
+  .takeSample(false, 100)
+  .foreach(println)
+
+// Sample output:
+// ((Johnny Depp,2010),ArrayBuffer(The Tourist, Alice in Wonderland))
+// ((Johnny Depp,2014),ArrayBuffer(Into the Woods, Transcendence, Tusk))</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+No shuffling is required!
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This example uses <em>spanByKey</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="our-challenge-solution-2">
+<h2>Our Challenge Solution 2</h2>
+<div class="paragraph"><p><strong>Grouping movies by actor and release year</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector-optimizations/grouping-rows/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable[(String,Int,String)]("killr_video","movies_by_actor")
+  .select("actor","release_year","title")
+  .spanBy{case (a,y,t) =&gt; (a,y)}
+  .takeSample(false, 100)
+  .foreach(println)
+
+// Sample output:
+// ((Johnny Depp,2010),ArrayBuffer((Johnny Depp,2010,The Tourist),
+//                                 (Johnny Depp,2010,Alice in Wonderland)))
+// ((Johnny Depp,2014),ArrayBuffer((Johnny Depp,2014,Into the Woods),
+//              (Johnny Depp,2014,Transcendence), (Johnny Depp,2014,Tusk)))</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+No shuffling is required!
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This example uses <em>spanBy</em>. The output is a bit more verbose and the computation is more memory intensive than Solution 1.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-spark-cassandra-connector-optimizations-joining-tables">
+<h2>The Challenge: Suboptimal Code</h2>
+<div class="paragraph"><p><strong>Joining two Cassandra tables on partition keys</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="schema" src="images/spark/spark-cassandra-connector-optimizations/joining-tables/schema.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>val actors = sc.cassandraTable("killr_video","actors")
+               .keyBy(row =&gt; row.getString("actor"))
+val movies = sc.cassandraTable("killr_video","movies_by_actor")
+               .keyBy(row =&gt; row.getString("actor"))
+actors.join(movies).takeSample(false, 100).foreach(println)
+
+// Sample output:
+// (Johnny Depp,(
+//  CassandraRow{actor: Johnny Depp, ..., place_of_birth: Owensboro, ...},
+//  CassandraRow{actor: Johnny Depp, ..., title: Pirates ...}))</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This code requires expensive shuffling.
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This code is suboptimal: it retrieves data from two Cassandra tables into Spark and calls
+Spark&#8217;s <em>join</em> to solve the problem. To perform the join, Spark shuffles both
+RDDs, which is expensive.
+We get the correct result but we should be able to solve this problem in
+a more efficient manner using <em>Spark-Cassandra Connector</em> API.</p></div>
+<div class="paragraph"><p>Intuitively, Cassandra stores rows in a table in partitions that group rows by a partition key (<em>actor</em> in both tables).
+Partitions from both tables with the same partition key reside on the same Cassandra node.
+Therefore, Cassandra is in a better position to use data locality to perform a join with no shuffling required.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="joining-cassandra-tables-on-primary-key-columns">
+<h2>Joining Cassandra Tables on Primary Key Columns</h2>
+<div class="paragraph"><p><strong>Spark-Cassandra Connector API</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>joinWithCassandraTable</strong>(<em>keyspace</em>, <em>table</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD of (<em>E</em>, <em>R</em>) pairs is formed by combining elements <em>E</em>
+from the source RDD with Cassandra rows <em>R</em> from the specified table <em>keyspace.table</em>.
+The default join condition is the equality of the <em>table</em>'s partition key columns and respective
+fields of the source RDD.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>on</strong>(<em>columns</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optionally used with <em>joinWithCassandraTable</em>() to specify which table <em>columns</em> to join on.
+This overrides the default join condition.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Columns in a join condition can include a table partition key
+and, optionally, one or more clustering columns. The join condition must respect the natural clustering key order
+as defined in the table schema.
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This is the join that is performed by Cassandra (<em>Spark-Cassandra Connector</em>, to be precise) rather than Spark.
+The  source RDD for transformation <em>joinWithCassandraTable</em> can be an RDD with <em>CassandraRow</em> objects retrieved from
+another table or any RDD that contains objects with information about fields.</p></div>
+<div class="paragraph"><p><em>on</em> columns should constitute a partition key or a <strong>proper</strong> subset of a primary key.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="example">
+<h2>Example</h2>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector-optimizations/joining-tables/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>case class ActorYear(actor: String, release_year: Int)
+val actors2014 = sc.parallelize(List(ActorYear("Johnny Depp",2014),
+                                     ActorYear("Bruce Willis",2014)))
+
+actors2014.joinWithCassandraTable("killr_video","movies_by_actor")
+          .takeSample(false, 100).foreach(println)
+// Sample output:
+// (ActorYear(Johnny Depp,2014),CassandraRow{actor: Johnny Depp,
+                                             release_year: 2010, ...})
+
+actors2014.joinWithCassandraTable("killr_video","movies_by_actor")
+          .on(SomeColumns("actor", "release_year"))
+          .takeSample(false, 100).foreach(println)
+// Sample output:
+// (ActorYear(Johnny Depp,2014),CassandraRow{actor: Johnny Depp,
+                                             release_year: 2014, ...})</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The first join is on column <em>actor</em> (default join condition). Notice the sample output for
+the release year of 2010.</p></div>
+<div class="paragraph"><p>The second join is on columns <em>actor</em> and <em>release_year</em> (specified explicitly).
+Notice the sample output - only 2014 can be in the result.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="how-does-the-cassandra-join-work">
+<h2>How Does the Cassandra Join Work?</h2>
+<div class="paragraph"><p><strong>Cassandra table is used as an index</strong></p></div>
+<div class="imageblock" style="float: center">
+<div class="content">
+<img alt="joinWithCassandraTable" src="images/spark/spark-cassandra-connector-optimizations/joining-tables/joinWithCassandraTable.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p><em>Pseudocode</em>:</p></div>
+<div class="ulist">
+<ul>
+<li><p>
+For each element in the source RDD<div class="ulist">
+<ul>
+<li>Retrieve <strong>matching</strong> rows from a Cassandra partition with a CQL query</li>
+<li>Compute all possible combinations (Cartesian product) of the element and the rows</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="paragraph"><p>This is really a variation of the classic index-based join algorithm.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="our-challenge-solution-3">
+<h2>Our Challenge Solution</h2>
+<div class="paragraph"><p><strong>Joining two Cassandra tables on partition keys</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="schema" src="images/spark/spark-cassandra-connector-optimizations/joining-tables/schema.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","actors")
+  .joinWithCassandraTable("killr_video","movies_by_actor")
+  .takeSample(false, 100).foreach(println)
+
+// Sample output:
+// (CassandraRow{actor: Johnny Depp, ..., place_of_birth: Owensboro, ...},
+//  CassandraRow{actor: Johnny Depp, ..., title: Pirates ...})</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+No shuffling is required!
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This example uses <em>joinWithCassandraTable</em> to solve our challenge. The difference from
+the previous example is that the source RDD is a Cassandra RDD.
+This is a simple optimization that may have a significant performance impact.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="final-challenge">
+<h2>Final Challenge</h2>
+<div class="paragraph"><p><strong>Which solution is more efficient?</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","actors")
+  .joinWithCassandraTable("killr_video","movies_by_actor")
+  .takeSample(false, 100).foreach(println)</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>sc.cassandraTable("killr_video","movies_by_actor")
+  .joinWithCassandraTable("killr_video","actors")
+  .takeSample(false, 100).foreach(println)</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Now that you know how the Cassandra join is evaluated, which one would you pick?</p></div>
+<div class="paragraph"><p>In the case of two Cassandra tables, the transformation is <em>commutative</em>. You can pick
+any of the tables for your source RDD. You better pick a table with a smaller number of rows.</p></div>
+<div class="paragraph"><p>Answer: the first solution.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-spark-cassandra-connector-optimizations-cassandra-aware-partitioning">
+<h2>The Challenge: Suboptimal Code</h2>
+<div class="paragraph"><p><strong>Joining an RDD with a Cassandra table on a partition key</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector-optimizations/cassandra-aware-partitioning/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>case class Actor(actor: String)
+val actors = sc.parallelize(List(Actor("Johnny Depp"),Actor("Bruce Willis")))
+
+actors.joinWithCassandraTable("killr_video","movies_by_actor")
+      .takeSample(false, 100).foreach(println)
+
+// Sample output:
+// (Actor(Johnny Depp),
+//  CassandraRow{actor: Johnny Depp, ...,
+//               title: Pirates of the Caribbean: On Stranger Tides})</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This code is suboptimal due to mismatch in the <em>actors</em> RDD partitioning and the <em>movies_by_actor</em> table partitioning.
+We are not doing shuffling here but table partitions have to be transfered to nodes where actors are located to do the join. This is
+still expensive. Please see the next slide for an illustration.</p></div>
+<div class="paragraph"><p>We get the correct result but we should be able to solve this problem in
+a more efficient manner using <em>Spark-Cassandra Connector</em> API. We should be able to repartition the <em>actors</em> RDD to match table partitioning,
+such that records with the same partition key (from both the RDD and the table) are located on the same node.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>RDD and table partitioning</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:50%" />
+<col style="width:50%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Suboptimal (current solution)</th>
+<th class="tableblock halign-left valign-top">Optimal (desired solution)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="imageblock" style="float: center">
+<div class="content">
+<img alt="mismatch" src="images/spark/spark-cassandra-connector-optimizations/cassandra-aware-partitioning/mismatch.svg" />
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="imageblock" style="float: center">
+<div class="content">
+<img alt="match" src="images/spark/spark-cassandra-connector-optimizations/cassandra-aware-partitioning/match.svg" />
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Left illustration: data has to be moved among nodes to perform the join.</p></div>
+<div class="paragraph"><p>Right illustration: data for the join is already co-located.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="cassandra-aware-repartitioning-of-an-rdd">
+<h2>Cassandra-Aware Repartitioning of an RDD</h2>
+<div class="paragraph"><p><strong>Spark-Cassandra Connector API</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>repartitionByCassandraReplica</strong>(<em>keyspace</em>, <em>table</em>, [<em>numPartitionsPerHost</em>])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD is formed by shuffling elements of the source RDD into <em>numPartitionsPerHost</em> new partitions per host
+(10 by default) according to the replication strategy of a given <em>table</em> and <em>keyspace</em>.
+The source RDD must contain information about values that correspond to the table partition key columns.
+The new
+RDD partitioner is set to <em>ReplicaPartitioner</em>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Transformation <em>repartitionByCassandraReplica</em> can be used to relocate data in an RDD to match the replication strategy of a given table and keyspace.
+The transformation will look for partition key information in the given RDD and then use those values to determine which nodes in the cluster would be responsible for that data.
+You can control the resulting number of partitions with parameter <em>numPartitionsPerHost</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="our-challenge-solution-4">
+<h2>Our Challenge Solution</h2>
+<div class="paragraph"><p><strong>Joining an RDD with a Cassandra table on a partition key</strong></p></div>
+<div class="imageblock right" style="float: right">
+<div class="content">
+<img alt="movies by actor" src="images/spark/spark-cassandra-connector-optimizations/cassandra-aware-partitioning/movies_by_actor.svg" />
+</div>
+</div>
+<div class="listingblock left">
+<div class="content">
+<pre class="CodeRay"><code>case class Actor(actor: String)
+val actors = sc.parallelize(List(Actor("Johnny Depp"),Actor("Bruce Willis")))
+               .repartitionByCassandraReplica("killr_video","movies_by_actor")
+
+actors.joinWithCassandraTable("killr_video","movies_by_actor")
+      .takeSample(false, 100).foreach(println)
+
+// Sample output:
+// (Actor(Johnny Depp),
+//  CassandraRow{actor: Johnny Depp, ...,
+//               title: Pirates of the Caribbean: On Stranger Tides})</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The <em>actors</em> RDD is repartitioned using Cassandra&#8217;s <em>ReplicaPartitioner</em> before the join is performed.
+Data locality is the crux of this optimization!</p></div>
+</div>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">
+<i class="icon-chevron-with-circle-left"></i>
+</a>
+<a class="deck-next-link" href="#" title="Next">
+<i class="icon-chevron-with-circle-right"></i>
+</a>
+</div>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/d3.v2.js"></script>
+<script src="deck.js/jquery-ui.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/animation/deck.animation.js"></script>
+<script src="deck.js/extensions/deck.js-notes/deck.notes.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/clone/deck.clone.js"></script>
+<script src="deck.js/extensions/svg/svg.min.js"></script>
+<script src="js/course.js"></script>
+<footer>
+<div class="flex-element deck-course">
+<p>&copy; 2016 DataStax. Use only with permission. &bull;
+<span class="course-title">Optimizing With the Spark/Cassandra Connector</span></p>
+</div>
+<div class="flex-element deck-brand">
+<a href="http://academy.datastax.com" target="blank">DataStax Academy</a>
+</div>
+<div class="deck-progressbar">
+<span></span>
+</div>
+</footer>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+      $.deck('disableScale');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+    $(document).bind('deck.change', function(event, from, to) {
+      var width = to / ($.deck('getSlides').length - 1) * 100;
+      $('.deck-progressbar span').css('width', width + '%');
+    });
+  //]]>
+</script>
+</body>
+</html>

@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.2" name="generator" />
+<title>Spark Essentials</title>
+<link href="deck.js/themes/style/font.css" rel="stylesheet" />
+<style>
+.conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 1.2em; height: 1.2em; font-size: 0.9em; font-weight: bold; line-height: 1.2; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -0.1em; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+.colist table td:first-of-type { padding-right: 0.25em; }
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{font-weight: normal}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#00}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/datastax.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Spark Essentials</h1>
+</section>
+<section class="slide" id="spark-spark-essentials-hello-world">
+<h2>WordCount is the New "Hello, World!"</h2>
+<div class="imageblock center">
+<div class="content">
+<img alt="tag cloud" src="images/spark/spark-essentials/hello-world/tag-cloud.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>To demonstrate the basic syntax of Spark and its Scala API, lets consider the WordCount problem,
+which became the new "Hello, World!" in distributed computing. We will tackle this problem in
+the context of the KillrVideo dataset, whose tag cloud is shown in the slide. To visualize
+different video genres and their frequencies, we must count how many times each genre is assigned
+to any given video. Lets begin!</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="the-wordcount-problem">
+<h2>The WordCount Problem</h2>
+<div class="paragraph"><p><strong>General Steps</strong></p></div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+Load records from a data source
+</li>
+<li>
+Parse records and generate words
+</li>
+<li>
+Count how many times each word appears in the dataset
+</li>
+<li>
+Output the result
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph"><p>Spark will automatically parallelize computation</p></div>
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The algorithm for the WordCount problem includes four simple steps. First, we
+need to load data into Spark from an external data source, such as a file or a database.
+Second, we need to parse records into words that can be counted.
+Next, we need to count generated words.
+Finally, we push the result into an external system or output it to the screen.</p></div>
+<div class="paragraph"><p>We will implement each of these steps in the following slides.
+Spark will parallelize computation for us automatically.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="step-1-loading-records">
+<h2>Step 1: Loading Records</h2>
+<div class="paragraph"><p><strong>Reading video records from a local CSV file</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>val records = sc.textFile("file:///home/videos.csv")</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="step1" src="images/spark/spark-essentials/hello-world/step1.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Step 1 loads video records from a CSV file in the local file system.
+The <em>textFile</em> method is called on the <em>sc</em> object that is a predefined <em>SparkContext</em> available in <em>Spark shell</em>.
+<em>SparkContext</em> serves as an entry point to Spark functionality.
+The resulting <em>records</em> object is an RDD or Resilient Distributed Dataset.
+For now, lets think of <em>records</em> as a dataset representation in Spark.</p></div>
+<div class="paragraph"><p>As you can see from the illustration, each line in the CSV file becomes an element of type <em>String</em> in the RDD.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="step-2-parsing-records">
+<h2>Step 2: Parsing Records</h2>
+<div class="paragraph"><p><strong>Splitting video records into words and dropping video identifiers</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>val words = records.flatMap(record =&gt; record.split(",").drop(1))</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="step2" src="images/spark/spark-essentials/hello-world/step2.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>To parse the video records, we next apply transformation <em>flatMap</em> on the <em>records</em> RDD to obtain the <em>words</em> RDD.
+<em>flatMap</em> takes an anonymous function as a parameter. The body of this function is applied to each element of the input RDD <em>records</em>.
+In particular, each <em>record</em> is split based on the comma delimiter into multiple literals and the first literal representing a video identifier is dropped.
+All the remaining literals representing video genres become elements in the <em>words</em> RDD.</p></div>
+<div class="paragraph"><p>You may notice that <em>flatMap</em> is a one-to-many mapping, such that one element from the input RDD can result in many elements in the output RDD.
+<em>flatMap</em> is only one of many transformations defined for Spark RDDs. We will see examples of two other transformations in the next slide.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="step-3-counting-words">
+<h2>Step 3: Counting Words</h2>
+<div class="paragraph"><p><strong>Counting video genres</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>val counts = words.map(word =&gt; (word,1)).reduceByKey{case (x,y) =&gt; x + y}</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="step3" src="images/spark/spark-essentials/hello-world/step3.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Counting is implemented using two transformations.
+First, we <em>map</em> each word or genre to a pair consisting of a key and a value.
+In our example, a key is represented by a genre from the <em>words</em> RDD and value is always hard-coded as <em>1</em>.
+The intermediate RDD resulting from the <em>map</em> transformation contains key-value pairs and therefore, frequently called a Key-Value Pair RDD.
+The second transformation, <em>reduceByKey</em>, is applied on the intermediate RDD to aggregate values of pairs with the same key.
+In this example, the aggregation function is simply defined as addition of two numeric values.</p></div>
+<div class="paragraph"><p>The illustration shows the effects of these two transformations.</p></div>
+<div class="paragraph"><p>Note that, unlike <em>flatMap</em>, it is easy to see from the illustration that <em>map</em> allows for a one-to-one mapping.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="step-4-outputing-the-result">
+<h2>Step 4: Outputing The Result</h2>
+<div class="paragraph"><p><strong>Collecting and printing the result</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="sql language-sql">counts.collect().foreach(println)</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="step4" src="images/spark/spark-essentials/hello-world/step4.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In this last step, we are collecting and printing the result of our computation.
+We apply <em>collect</em> on the <em>counts</em> RDD to transfer all data from the distributed dataset represented by this RDD to a Scala Array on the client machine.
+Unlike transformations that take an RDD as input and return an RDD as output, <em>collect</em> is an action; it triggers computation of the final result and makes it available to the client program.</p></div>
+<div class="paragraph"><p>The output array is then processed using regular Scala Array API to print each element to the screen.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="final-solution">
+<h2>Final Solution</h2>
+<div class="paragraph"><p><strong>Taking advantage of the Scala fluent interface</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>sc.textFile("file:///home/videos.csv")
+  .flatMap(line =&gt; line.split(",").drop(1))
+  .map(word =&gt; (word,1))
+  .reduceByKey{case (x,y) =&gt; x + y}
+  .collect()
+  .foreach(println)</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Finally, we can take advantage of a couple of Scala syntactic features to make our code more compact and sometimes more readable.</p></div>
+<div class="paragraph"><p>The fluent interface is one such syntactic optimization.
+Here we have the same four steps of the WordCount problem implemented as one statement with method chaining.
+The result of this computation will be the same as before.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Taking advantage of the Scala unnamed parameters</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>sc.textFile("file:///home/videos.csv")
+  .flatMap(_.split(",").drop(1))
+  .map((_,1))
+  .reduceByKey(_+_)
+  .collect
+  .foreach(println)</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In addition, if you are familiar with unnamed parameters in Scala represented by <em>underscores</em>,
+our code can be further simplified as shown in this slide.
+Again, the result of this computation will be the same as before.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-spark-essentials-rdd">
+<h2>What is an RDD?</h2>
+<div class="paragraph"><p><strong>Programming abstraction of a dataset for Spark in-memory computation</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dataset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dataset contains primitive values, records, tuples, class objects</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Distributed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data may reside on different nodes in a cluster</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Resilient</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data is recomputed based on lineage in case of a failure</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Immutable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dataset is transformed into a new dataset rather than mutated</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">In-memory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data is kept in memory as much as possible</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Resilient Distributed Dataset or RDD is a programming abstraction of a dataset
+for Spark in-memory computation. RDD has a number of properties that
+we will discuss in more detail in the following slides.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="rdd-as-a-dataset">
+<h2>RDD as a Dataset</h2>
+<div class="ulist">
+<ul>
+<li>Collection of data objects</li>
+<li>Object types can affect operations</li>
+</ul>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="dataset" src="images/spark/spark-essentials/rdd/dataset.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>First, think of RDD as a dataset or a collection of data objects of a known type.
+Types of objects can affect operations that are applicable to a particular RDD.
+For example, the RDD in the illustration holds key-value pairs,
+where keys correspond to people names
+and values correspond to people ages, such as Alice is 21 y.o.
+Key-Value Pair RDDs constitute a special class of RDDs with many useful and unique operations.</p></div>
+<div class="paragraph"><p>It is important to understand that until computation is triggered by an action,
+an RDD does not hold any data; it is instead just a recipe of how data objects
+can be computed.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="rdd-as-a-distributed-dataset">
+<h2>RDD as a Distributed Dataset</h2>
+<div class="ulist">
+<ul>
+<li>RDD is divided into <em>partitions</em></li>
+<li>Partitions are distributed across nodes in a cluster</li>
+</ul>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="partitions" src="images/spark/spark-essentials/rdd/partitions.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Second, Spark automatically partitions an RDD into smaller collections called <em>partitions</em>
+and distributes them among <em>Executors</em> on different nodes in a cluster.</p></div>
+<div class="paragraph"><p>In our example, we have four partitions distributed across the three nodes.</p></div>
+<div class="paragraph"><p>How partitioning is performed may depend on many factors,
+including a data source, such as Cassandra or HDFS,
+number of cores available to an application, and types of operations applied to an RDD.
+An application will frequently have to control partitioning
+to achieve optimal performance.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="rdd-as-a-resilient-distributed-dataset">
+<h2>RDD as a Resilient Distributed Dataset</h2>
+<div class="ulist">
+<ul>
+<li>Spark remembers lineage of all data it computes to achieve fault-tolerance</li>
+<li>Spark automatically recomputes partitions that were lost due to a failure</li>
+</ul>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="failure" src="images/spark/spark-essentials/rdd/failure.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Third, RDD is resilient or fault-tolerant because Spark remembers lineage or pedigree
+of all data it computes. In case of a node or process failure, lost partitions
+are recomputed automatically.</p></div>
+<div class="paragraph"><p>This process is illustrated in our example, where the node with two partitions failed
+and Spark recomputed those partitions on the two other nodes.
+Reliability of an external data source is important for result reproducibility.
+Spark should be able to retrieve data again if need be!</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="rdd-is-immutable">
+<h2>RDD is Immutable</h2>
+<div class="ulist">
+<ul>
+<li>RDD is read-only</li>
+<li>RDD can be transformed</li>
+</ul>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="immutable" src="images/spark/spark-essentials/rdd/immutable.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Next, the RDD property that is frequently overlooked is immutability.</p></div>
+<div class="paragraph"><p>It is helpful to think about RDD data as read-only. To change data, we must transform
+an RDD into a new RDD.</p></div>
+<div class="paragraph"><p>In this example, we are applying the <em>filer</em> transformation on the input RDD to
+produce the output RDD with key-value pairs where value (person&#8217;s age) is greater
+or equal to 21.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="rdd-is-for-in-memory-computation">
+<h2>RDD is for In-Memory Computation</h2>
+<div class="ulist">
+<ul>
+<li>RDD partitions are processed in memory</li>
+<li>RDD (as a whole) does not have to fit into memory</li>
+</ul>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="in memory" src="images/spark/spark-essentials/rdd/in-memory.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Finally, Spark is about parallel, in-memory computation.
+Partitions do have to be in memory to be processed, however an RDD as a whole
+does not need to be in memory at one given moment.</p></div>
+<div class="paragraph"><p>Conceptually, imagine that computation is organized into multiple pipelines
+with a known throughput, such that each pipeline can handle some number of partitions
+at a time. The data that is waiting for its turn to get into a pipeline is simply sitting
+at the data source. Once a pipeline is cleared and its output is to an external system,
+it is capable to serve more partitions.
+The more cluster resources are allocated to your application,
+the more pipelines and parallelism you can have.</p></div>
+<div class="paragraph"><p>It should be noted that some operations on RDDs,
+such as those that involve data shuffling, require disk I/O.
+In addition, an application will frequently have to control how an RDD is cached or persisted
+to achieve optimal performance.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-spark-essentials-rdd-creating">
+<h2>How Do You Create an RDD?</h2>
+<div class="paragraph"><p><strong>A few prerequisites</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Prerequisite</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>SparkContext</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <em>SparkContext</em> represents a connection to a Spark cluster.
+In <em>Spark shell</em>, object <em>sc</em> is created automatically.
+In a standalone application, a <em>SparkContext</em> must be constructed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Spark-Cassandra Connector</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A library that allows moving data between Spark and Cassandra.
+<em>DataStax Enterprise</em> comes with Spark and Cassandra integrated.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Data source</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data is initially loaded into Spark from an external source.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Before we can create a Spark RDD, we need to discuss some prerequisites.</p></div>
+<div class="paragraph"><p>First, we need to have a <em>SparkContext</em> object that represents a connection
+to a Spark cluster and serves as an entry point to Spark functionality.
+In this presentation, we assume that such object is predefined and denoted as <em>sc</em>,
+which is exactly the case how it is defined in <em>Spark shell</em>.</p></div>
+<div class="paragraph"><p>Second, if we want to interact with Cassandra, we need a special library called
+<em>Spark-Cassandra Connector</em>. This library is already part of DataStax Enterprise (DSE)
+and therefore, we can just start using its functions.</p></div>
+<div class="paragraph"><p>Finally, remember that Spark is not a storage system or a database like Cassandra;
+any data has to be loaded
+from an external system. Depending on an initial data source for our RDDs,
+we will discuss different approaches to creating an RDD.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Three main approaches</strong></p></div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+Parallelize an <em>existing collection</em>
+</li>
+<li>
+Load data from a <em>stable storage</em>
+</li>
+<li>
+Transform an <em>existing RDD</em>
+</li>
+</ol>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In particular, we will discuss how to parallelize an existing Scala collection,
+such as a list, array, or sequence; how to load data from a stable storage, such as a file or
+the Cassandra database; and how to create an RDD from an existing RDD using transformations,
+such as <em>filter</em> or <em>map</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="creating-an-rdd-from-an-existing-collection">
+<h2>Creating an RDD from an Existing Collection</h2>
+<div class="listingblock">
+<div class="title"><em>Parallelizing a Scala List</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val lst = List( ("Frozen", 2013), ("Toy Story", 1995), ("WALL-E", 2008) )
+// lst: List[(String, Int)]
+
+val rdd = sc.parallelize(lst)
+// rdd: org.apache.spark.rdd.RDD[(String, Int)]</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph"><p>This approach is used with small datasets for development, testing,
+and educational purposes.</p></div>
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>To create an RDD from a Scala collection, we first define a local collection,
+such as the list of movies in this example. Each movie is represented
+by a Scala tuple with a movie title and a movie year. Notice the type
+of value <em>lst</em> is; it is <em>List[(String, Int)]</em>.</p></div>
+<div class="paragraph"><p>Then, we simply pass this list to method <em>parallelize</em>, which returns a Spark RDD
+as you can see in the example. Again, notice the type of value <em>rdd</em>; it is now
+<em>RDD[(String, Int)]</em>.</p></div>
+<div class="paragraph"><p>This is how simple to create an RDD from a collection you can define in your client
+program. <em>parallelize</em> is quite useful for quick development and testing things out,
+and is perfect for educational examples. You are unlikely to use it in production however,
+as large datasets are most likely to be loaded from Cassandra or a distributed file system.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="creating-an-rdd-from-a-file">
+<h2>Creating an RDD from a File</h2>
+<div class="listingblock">
+<div class="title"><em>Local file system</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val rdd = sc.textFile("file:///home/videos.csv")
+// rdd: org.apache.spark.rdd.RDD[String]</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Distributed file system</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val rdd = sc.textFile("cfs:///home/videos.csv")
+// rdd: org.apache.spark.rdd.RDD[String]</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph"><p><em>SparkContext</em> supports <em>hadoopFile</em>, <em>newAPIHadoopFile</em>, <em>sequenceFile</em>, and <em>objectFile</em>
+for other types of files.</p></div>
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Creating an RDD from a text file is achieved by calling the <em>textFile</em> method on the <em>SparkContext</em> object.</p></div>
+<div class="paragraph"><p>In the first example, we are supplying the file location in a local file system.
+This file must exist on every worker node in a cluster.</p></div>
+<div class="paragraph"><p>In the second example, we are passing the file location in Cassandra File System, which
+is HDFS-compatible file system.</p></div>
+<div class="paragraph"><p>In both cases, the resulting RDD contains elements of type <em>String</em>, because each element
+corresponds to exactly one line in the file.</p></div>
+<div class="paragraph"><p>There are a few additional methods (listed in the slide) that allow creating RDDs from files of other formats.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="creating-an-rdd-from-a-cassandra-table">
+<h2>Creating an RDD from a Cassandra Table</h2>
+<div class="listingblock">
+<div class="title"><em>Reading from a Cassandra table</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val rdd = sc.cassandraTable("killr_video", "videos")
+// rdd: com.datastax.spark.connector.rdd.CassandraTableScanRDD[com.datastax.spark.connector.CassandraRow]</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph"><p><em>Spark-Cassandra Connector</em> supports many other functions to customize and control
+data retrieval from a Cassandra table, including <em>select</em>, <em>where</em>, <em>limit</em>,
+<em>withAscOrder</em>, and <em>withDescOrder</em>.</p></div>
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>It is also very straightforward to create an RDD from a Cassandra table by calling
+method <em>cassandraTable</em> supplied by <em>Spark-Cassandra Connector</em>.</p></div>
+<div class="paragraph"><p>In this example, we are loading all data from table <em>videos</em> that is defined in keyspace
+<em>killr_video</em>. You should notice that the returned RDD type is coming from the connector
+package and is defined as an RDD of Cassandra rows with the structure that matches the underlying
+Cassandra table rows.</p></div>
+<div class="paragraph"><p>The connector supports additional methods to select specific table columns, retrieve
+only rows satisfying a certain predicate, or limit a number of rows in a resulting RDD.
+While we will not discuss these methods here, it is worth mentioning that, internally,
+data for a Cassandra RDD will be retrieved with an efficient CQL query.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="creating-an-rdd-from-an-existing-rdd">
+<h2>Creating an RDD from an Existing RDD</h2>
+<div class="listingblock">
+<div class="title"><em>Transforming an RDD into another RDD</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val rdd1 = sc.parallelize(List( ("Frozen", 2013), ("Toy Story", 1995), ("WALL-E", 2008) ) )
+// rdd1: org.apache.spark.rdd.RDD[(String, Int)]
+
+val rdd2 = rdd1.filter{ case (title,year) =&gt; year &gt; 2010 }
+// rdd2: org.apache.spark.rdd.RDD[(String, Int)]</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph"><p>The Spark RDD API supports many useful transformations, including <em>filter</em>, <em>map</em>, <em>flatMap</em>, <em>union</em>, and <em>intersection</em>.</p></div>
+</td>
+</tr>
+</table>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The last but not least, an RDD is frequently created from another RDD using a transformation.
+Transformations are used frequently because they actually do some useful processing of data.</p></div>
+<div class="paragraph"><p>Here, given <em>rdd1</em> created by parallelizing a collection, we are applying the
+<em>filter</em> transformation to obtain <em>rdd2</em>. The <em>filter</em>'s parameter is the anonymous function
+that is applied on every element of <em>rdd1</em>; the result of this function is either <em>true</em> (the
+element passes the filtering condition and will appear in <em>rdd2</em>) or <em>false</em> (the element is eliminated).</p></div>
+<div class="paragraph"><p>As you may have already computed, <em>rdd2</em> will only contain information for movie "Frozen".</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="there-is-more-to-it-than-that">
+<h2>There is More to It than That &#8230;&#8203;</h2>
+<div class="paragraph"><p><strong>Two related topics</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Lazy evaluation</li>
+<li>Partitioning</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Finally, lets briefly introduce two internal topics that we will talk about elsewhere in a greater detail.</p></div>
+<div class="paragraph"><p>All the discussed methods, such as <em>parallelize</em>, <em>textFile</em>, <em>cassandraTable</em>, and <em>filter</em>,
+are evaluated lazily by Spark. That means that, in all our examples, Spark only records
+metadata about
+how an RDD can be created but does not access actual data until later time. Such
+time has to be defined by an action, which belongs to a special class of operations.</p></div>
+<div class="paragraph"><p>It is also worth mentioning that, for presented approaches, a number of resulting RDD partitions
+may be different depending on a data source used. One can also control a number of partitions by
+passing a second, optional parameter to <em>parallelize</em>, <em>textFile</em>, and some of the RDD transformations
+(but not <em>filter</em>). Partitioning of a Cassandra RDD will depend on a data size, as well as Cassandra partitioning to
+benefit from data locality. Partitioning is very important for computation parallelism.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-spark-essentials-rdd-transformations">
+<h2>What are RDD Transformations?</h2>
+<div class="paragraph"><p><strong>Two types of RDD operations</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+<em>Transformations</em><div class="ulist">
+<ul>
+<li>Transform an RDD to a new RDD</li>
+<li>Lazy evaluation</li>
+</ul>
+</div></p></li>
+<li><p>
+<em>Actions</em><div class="ulist">
+<ul>
+<li>Perform computation on an RDD and output results
+to a client or store results to a stable storage</li>
+<li>Trigger computation</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Spark defines two types of operations on RDDs - transformations and actions.</p></div>
+<div class="paragraph"><p>A transformation always takes an RDD as input and returns an RDD as output.
+In other words, a transformation creates a new RDD from an existing RDD.
+All transformations in Spark are evaluated lazily, such that they do not
+compute their results immediately but rather record metadata about how to compute
+their results.</p></div>
+<div class="paragraph"><p>On the other hand, an action triggers computation: it takes an RDD and computes the final result,
+which is either transferred to the client driver application or stored into
+an external system like Cassandra.</p></div>
+<div class="paragraph"><p>This presentation focuses on common transformations.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="common-transformations">
+<h2>Common Transformations</h2>
+<div class="paragraph"><p><strong>Unary transformations</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>filter</strong>(<em>f</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD is formed by selecting those elements of the source RDD
+on which a function <em>f</em> returns <em>true</em>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>map</strong>(<em>f</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD is formed by applying a function <em>f</em> on each element of
+the source RDD. There is a <em>one-to-one</em> correspondence between input and output elements.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>flatMap</strong>(<em>f</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD is formed by applying a function <em>f</em> on each element of
+the source RDD. There is a <em>one-to-many</em> correspondence between input and output elements
+if <em>f</em> returns a <em>Seq</em> with more than one element.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>distinct</strong>()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD is formed by distinct elements of the source RDD.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>sample</strong>(<em>withReplacement</em>, <em>fraction</em>, [<em>seed</em>])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD is formed by a <em>fraction</em> of elements of the source RDD
+using sampling with or without replacement. A random number generator <em>seed</em> is optional.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Here are a few common unary transformations, which can be applied on a single, source RDD.</p></div>
+<div class="paragraph"><p><em>filter</em> takes a function <em>f</em> as a parameter and returns a new RDD that is formed
+by selecting those elements of the source RDD on which <em>f</em> returns <em>true</em>.</p></div>
+<div class="paragraph"><p>In the case of both <em>map</em> and <em>flatMap</em>, a function <em>f</em> is applied on every element
+of the source
+RDD and the function return value becomes an element in a new RDD. The key difference
+between these two transformations is that <em>flatMap</em> further flattens or unnests any collection
+returned by function <em>f</em>, such that every element in the collection becomes
+a separate element in the new RDD.</p></div>
+<div class="paragraph"><p><em>distinct</em> returnes an RDD that contains all distinct elements of the source RDD.</p></div>
+<div class="paragraph"><p><em>sample</em> allows randomly selecting only a fraction of elements of the source RDD,
+which is useful for large dataset exploration.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Binary transformations</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>union</strong>(<em>otherRDD</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD contains the union of elements from the source RDD and <em>otherRDD</em>.
+Duplicates are allowed. Input RDDs must be <em>union-compatible</em>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>intersection</strong>(<em>otherRDD</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD contains the intersection of elements from the source RDD and <em>otherRDD</em>.
+Duplicates are eliminated. Input RDDs must be <em>union-compatible</em>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>subtract</strong>(<em>otherRDD</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD contains those elements from the source RDD that are not in <em>otherRDD</em>.
+Duplicates are allowed. Input RDDs must be <em>union-compatible</em>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>cartesian</strong>(<em>otherRDD</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new RDD contains all possible pairs of elements from the source RDD and <em>otherRDD</em>.
+RDD[<em>T</em>] <em>x</em> RDD[<em>U</em>] &#8594; RDD[(<em>T</em>,<em>U</em>)].
+Duplicates are allowed.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>These four transformations are binary, so they take the source RDD and the other RDD
+as input and return a new RDD.</p></div>
+<div class="paragraph"><p><em>union</em>, <em>intersection</em>, <em>subtract</em>, and <em>cartesian</em> work just like the corresponding
+mathematical operations of sets.</p></div>
+<div class="paragraph"><p>This is, of course, an incomplete list of transformations available in Spark.
+We will see many more transformations in other presentations, especially in the context of
+Key-Value Pair RDDs.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="transformation-examples">
+<h2>Transformation Examples</h2>
+<div class="paragraph"><p><strong>Demonstrating <em>filter</em>, <em>map</em>, <em>flatMap</em>, <em>distinct</em>, and <em>cartesian</em></strong></p></div>
+<div class="listingblock">
+<div class="title"><em>Starting with an RDD of movies</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val movies = sc.parallelize( Array("Frozen, 2013", "Toy Story, 1995", "WALL-E, 2008", "Despicable Me, 2010", "Shrek, 2001", "The Lego Movie, 2014", "Alice in Wonderland, 2010") )</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="input" src="images/spark/spark-essentials/rdd-transformations/input.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>We are going to demonstrate some of the discussed transformations in the following examples.
+Let us start by creating the <em>movies</em> RDD with 7 elements, where each element is
+a string literal containing a movie title and a movie release year.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="em-filter-em">
+<h2><em>filter</em></h2>
+<div class="listingblock">
+<div class="title"><em>Find movies from 2010</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val movies2010 = movies.filter(m =&gt; m.substring(m.length-4,m.length).toInt == 2010)
+
+// alternatively, the same result can be computed with this statement
+val movies2010 = movies.filter(m =&gt; m.split(",").last.trim.toInt == 2010)</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="filter" src="images/spark/spark-essentials/rdd-transformations/filter.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Our first challenge is to find movies from 2010.</p></div>
+<div class="paragraph"><p>Here we are using the <em>filter</em> transformation to select only those movies whose
+release years are equal to 2010. A minor difficulty is that we first need to extract
+a year from a string literal. There are a couple of alternatives shown. First,
+we can use method <em>substring</em> to extract the last 4 characters in a literal and convert
+the result to an integer. Second, we can use method <em>split</em> to decompose a literal based on
+the comma delimiter, take the last component, trim leading spaces, and convert the result
+to <em>Int</em>. In both cases, the result is exactly the same - two movies are selected for
+the new RDD.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="em-map-em">
+<h2><em>map</em></h2>
+<div class="listingblock">
+<div class="title"><em>Add a set of genres to each movie</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val familyMovies = movies2010.map(m =&gt; (m, Set("Family","Animation")))</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="map" src="images/spark/spark-essentials/rdd-transformations/map.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Next, we are going to add a predefined set of genres ("Family" and "Animation")
+to each movie from 2010.</p></div>
+<div class="paragraph"><p><em>map</em> takes each input RDD element of type <em>String</em> and returns a tuple with
+two components of type <em>String</em> and <em>Set</em> for the new <em>familyMovies</em> RDD.
+This is a one-to-one mapping.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="em-flatmap-em-and-em-distinct-em">
+<h2><em>flatMap</em> and <em>distinct</em></h2>
+<div class="listingblock">
+<div class="title"><em>Extract distinct genres</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val familyGenres = familyMovies.flatMap{case (m,g) =&gt; g }
+                               .distinct</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="flatmap" src="images/spark/spark-essentials/rdd-transformations/flatmap.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This time, we want to extract distinct genres from the previous RDD.</p></div>
+<div class="paragraph"><p>Because the genres are stored in the <em>Set</em> collection, we are using <em>flatMap</em>
+to get down to individual elements in a set and map them to elements of the
+intermediate RDD. This is a one-to-many mapping. We are then eliminating duplicates with the <em>distinct</em> transformation
+that gives us RDD <em>familyGenres</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="em-cartesian-em-and-em-filter-em">
+<h2><em>cartesian</em> and <em>filter</em></h2>
+<div class="listingblock">
+<div class="title"><em>Compute all possible pairs of non-repeating genres</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val pairs = familyGenres.cartesian(familyGenres)
+                        .filter{case (g1,g2) =&gt; g1 != g2}</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="cartesian" src="images/spark/spark-essentials/rdd-transformations/cartesian.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In our final example, we are computing all possible pairs of
+non-repeating genres using transformations <em>cartesian</em> and <em>filter</em>.</p></div>
+<div class="paragraph"><p>Computing a Cartesian product can produce a large result, yet it is a
+useful transformation in real life applications. For example, to find similar items in a set,
+you may have to compare every item with every other item in this set. This is where
+<em>cartesian</em> helps you generate all possible item pairs to do the comparison.</p></div>
+<div class="paragraph"><p>Our <em>filter</em> transformation eliminates pairs where both genres are the same.</p></div>
+<div class="paragraph"><p>Go ahead and try other transformations we discussed!</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="spark-spark-essentials-rdd-actions">
+<h2>What are RDD Actions?</h2>
+<div class="paragraph"><p><strong>Two types of RDD operations</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+<em>Transformations</em><div class="ulist">
+<ul>
+<li>Transform an RDD to a new RDD</li>
+<li>Lazy evaluation</li>
+</ul>
+</div></p></li>
+<li><p>
+<em>Actions</em><div class="ulist">
+<ul>
+<li>Perform computation on an RDD and output results
+to a client or store results to a stable storage</li>
+<li>Trigger computation</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Spark defines two types of operations on RDDs - transformations and actions.</p></div>
+<div class="paragraph"><p>A transformation always takes an RDD as input and returns an RDD as output.
+In other words, a transformation creates a new RDD from an existing RDD.
+All transformations in Spark are evaluated lazily, such that they do not
+compute their results immediately but rather record metadata about how to compute
+their results.</p></div>
+<div class="paragraph"><p>On the other hand, an action triggers computation: it takes an RDD and computes the final result,
+which is either transferred to the client driver application or stored into
+an external system like Cassandra.</p></div>
+<div class="paragraph"><p>This presentation focuses on common actions.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="common-actions">
+<h2>Common Actions</h2>
+<div class="paragraph"><p><strong>Actions that return results to the driver program</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Action</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>collect</strong>()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns an <em>Array</em> with all elements of the source RDD.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>count</strong>()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns a total number of elements in the source RDD.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>reduce</strong>(<em>f</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns an aggregate value computed by applying function <em>f</em> to elements of
+the source RDD.
+Function <em>f</em> must take two arguments and return one value, and should
+be commutative and associative for correct parallel computation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>take</strong>(<em>n</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns an <em>Array</em> with the first <em>n</em> elements of the source RDD.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>first</strong>()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the first element of the source RDD.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Here are some frequently used actions that are evaluated in parallel on the source RDD
+and whose results are returned to the driver program.</p></div>
+<div class="paragraph"><p><em>collect</em> simply returns all elements of the source RDD as an <em>Array</em>.</p></div>
+<div class="paragraph"><p><em>count</em> counts how many elements are in the source RDD and returns that value.</p></div>
+<div class="paragraph"><p><em>reduce</em> uses a function <em>f</em> to compute a single aggregate value from all elements
+of the source RDD.</p></div>
+<div class="paragraph"><p><em>take</em> returns an <em>Array</em> with the first <em>n</em> elements of the source RDD.</p></div>
+<div class="paragraph"><p><em>first</em> only returns the first element of the source RDD.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Actions with side effects</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:25%" />
+<col style="width:75%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Action</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>foreach</strong>(<em>f</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Executes a function <em>f</em> on each element of the source RDD.
+The function usually implements a side effect, such as updating an <em>accumulator</em> variable
+or interacting with an external system.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>saveAsTextFile</strong>(<em>path</em>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Saves all elements of the source RDD into a text file.
+Spark calls <em>toString</em> on each element to convert it to a line of text in the file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>saveToCassandra</strong>(<em>keyspace</em>, <em>table</em>, [<em>columns</em>])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stores all elements of the source RDD into a Cassandra <em>table</em> in a given <em>keyspace</em>.
+Table <em>columns</em> may be specified if needed. <em>saveToCassandra</em> is available through
+<em>Spark-Cassandra Connector</em>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Some actions do not return their results to the driver program but are rather used
+for side effects.</p></div>
+<div class="paragraph"><p><em>foreach</em> takes function <em>f</em> as a parameter and executes it on every element of the
+source RDD. The function usually pushes data to an external system, updates
+<em>accumulator</em> variables, or performs other side effects.</p></div>
+<div class="paragraph"><p><em>saveAsTextFile</em> can be used to save all elements of the source RDD into a text file.</p></div>
+<div class="paragraph"><p>And, finally, <em>saveToCassandra</em> allows saving all elements of the source RDD into
+a Cassandra table. <em>saveToCassandra</em> is one of the actions supported by
+<em>Spark-Cassandra Connector</em>, which we will discuss in another presentation.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="action-examples">
+<h2>Action Examples</h2>
+<div class="paragraph"><p><strong>Demonstrating <em>collect</em>, <em>count</em>, <em>reduce</em>, and <em>foreach</em></strong></p></div>
+<div class="listingblock">
+<div class="title"><em>Starting with an RDD of movies</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val movies = sc.parallelize( Array("Frozen, 2013", "Toy Story, 1995", "WALL-E, 2008", "Despicable Me, 2010", "Shrek, 2001", "The Lego Movie, 2014", "Alice in Wonderland, 2010") )</code></pre>
+</div>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img alt="input" src="images/spark/spark-essentials/rdd-actions/input.svg" />
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>We are going to demonstrate some of the discussed actions in the following examples.
+Let us start by creating the <em>movies</em> RDD with 7 elements, where each element is
+a string literal containing a movie title and a movie release year.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="em-collect-em">
+<h2><em>collect</em></h2>
+<div class="listingblock">
+<div class="title"><em>Output movies from 2010</em></div>
+<div class="content">
+<pre class="CodeRay"><code>movies.filter(m =&gt; m.substring(m.length-4,m.length).toInt == 2010)
+      .collect
+      .foreach(println)</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Output</em></div>
+<div class="content">
+<pre class="CodeRay"><code>Despicable Me, 2010
+Alice in Wonderland, 2010</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Our first example prints movies from 2010 to a console on the client side.</p></div>
+<div class="paragraph"><p>Here we are using the <em>filter</em> transformation to select only those movies whose
+release years are equal to 2010. We are then returning the result to the client
+as an <em>Array</em> with <em>collect</em>. We finally iterate over the array elements and print each one
+of them locally.</p></div>
+<div class="paragraph"><p><em>collect</em> should be used with caution when working with large datasets. You
+do not want to transfer huge amounts of data to the client application from your Spark cluster.
+Instead, you want to apply transformations like <em>filter</em> to decrease your data size
+before collecting the result.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="em-count-em">
+<h2><em>count</em></h2>
+<div class="listingblock">
+<div class="title"><em>Output the total number of movies in the dataset</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val totalCount = movies.count
+
+println(totalCount)</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Output</em></div>
+<div class="content">
+<pre class="CodeRay"><code>7</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Next, we are going to count how many movies we have in the original RDD.</p></div>
+<div class="paragraph"><p>This is straightforward to do using action <em>count</em>. Counting is done in parallel
+by Spark and the final result is returned to the driver program and stored in local
+variable <em>totalCount</em>. We output value <em>7</em> with <em>println</em>.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="em-reduce-em">
+<h2><em>reduce</em></h2>
+<div class="listingblock">
+<div class="title"><em>Output a sum of all movie title lengths</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val totalLength =  movies.map(m =&gt; m.substring(0, m.length - 6).length)
+                         .reduce{case (x,y) =&gt; x + y}
+
+println(totalLength)</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Output</em></div>
+<div class="content">
+<pre class="CodeRay"><code>72</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>This time, we want to add up all movie title lengths just for demostration purposes.</p></div>
+<div class="paragraph"><p>We are applying the <em>map</em> transformation to extract movie titles and compute a number
+of characters in each one. We are then using the <em>reduce</em> action that adds any two
+length values together and does it for all RDD elements and intermediate results in parallel.
+The final result is returned to the driver program, stored into the local variable, and printed.</p></div>
+<div class="paragraph"><p>Instead of using <em>reduce</em>, we could have used action <em>sum</em> to achieve the same result.
+Look it up!</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="em-foreach-em">
+<h2><em>foreach</em></h2>
+<div class="listingblock">
+<div class="title"><em>Output an average of all movie title lengths</em></div>
+<div class="content">
+<pre class="CodeRay"><code>val totalCount  = sc.accumulator(0)
+val totalLength = sc.accumulator(0)
+
+movies.map(m =&gt; m.substring(0,m.length - 6).length)
+      .foreach{ l =&gt; totalCount += 1; totalLength += l }
+
+println(totalLength.value / totalCount.value)
+println(totalLength.value.toDouble / totalCount.value)</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><br /></p></div>
+<div class="listingblock">
+<div class="title"><em>Output</em></div>
+<div class="content">
+<pre class="CodeRay"><code>10
+10.285714285714286</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Our last example of computing an average movie title length is a bit more involved.</p></div>
+<div class="paragraph"><p>Notice that, to compute the average, we can use <em>totalCount</em> and <em>totalLength</em>
+from the previous two examples. Divide 72 by 7 locally and we are done! However,
+that would require us using two actions (<em>count</em> and <em>reduce</em>) and therefore, we will
+have to do, so to speak, two passes over our dataset of movies.</p></div>
+<div class="paragraph"><p>We can do better than that with accumulators!</p></div>
+<div class="paragraph"><p>First, we are declaring two <em>accumulator</em> variables, <em>totalCount</em> and <em>totalLength</em>,
+with initial values that are equal to zero. Accumulators are special variables in Spark that can
+be added to in parallel but their final aggregate values can only be read locally by
+the driver program.</p></div>
+<div class="paragraph"><p>Second, we are applying the <em>map</em> transformation to get individual title lengths.</p></div>
+<div class="paragraph"><p>Third, we are using the <em>foreach</em> action to update our accumulators. For each
+RDD element, we are adding one to <em>totalCount</em> and the element value to <em>totalLength</em>.</p></div>
+<div class="paragraph"><p>Last, we are accessing accumulator values locally in the driver program, calculating
+the average and printing the result.</p></div>
+<div class="paragraph"><p>On a final note, instead of using <em>foreach</em> and <em>accumulator</em> variables,
+we could have used action <em>mean</em> for this example. Try it out!</p></div>
+</div>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">
+<i class="icon-chevron-with-circle-left"></i>
+</a>
+<a class="deck-next-link" href="#" title="Next">
+<i class="icon-chevron-with-circle-right"></i>
+</a>
+</div>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/d3.v2.js"></script>
+<script src="deck.js/jquery-ui.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/animation/deck.animation.js"></script>
+<script src="deck.js/extensions/deck.js-notes/deck.notes.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/clone/deck.clone.js"></script>
+<script src="deck.js/extensions/svg/svg.min.js"></script>
+<script src="js/course.js"></script>
+<footer>
+<div class="flex-element deck-course">
+<p>&copy; 2016 DataStax. Use only with permission. &bull;
+<span class="course-title">Spark Essentials</span></p>
+</div>
+<div class="flex-element deck-brand">
+<a href="http://academy.datastax.com" target="blank">DataStax Academy</a>
+</div>
+<div class="deck-progressbar">
+<span></span>
+</div>
+</footer>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+      $.deck('disableScale');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+    $(document).bind('deck.change', function(event, from, to) {
+      var width = to / ($.deck('getSlides').length - 1) * 100;
+      $('.deck-progressbar span').css('width', width + '%');
+    });
+  //]]>
+</script>
+</body>
+</html>
