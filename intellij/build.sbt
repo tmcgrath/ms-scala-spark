@@ -1,4 +1,4 @@
-name := "spark-sql-examples"
+name := "spark-sandbox"
  
 version := "1.0"
 
@@ -22,6 +22,5 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % "1.6.2" % "provided",
   "com.databricks" %% "spark-csv" % "1.5.0",
   "com.datastax.spark" %% "spark-cassandra-connector" % "1.5.0",
-  "org.apache.spark" %% "spark-hive" % "1.6.2",
-  "mysql" % "mysql-connector-java" % "5.1.12"
+  "org.apache.spark" %% "spark-hive" % "1.6.2"
 )
