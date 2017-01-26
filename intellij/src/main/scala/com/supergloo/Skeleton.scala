@@ -20,6 +20,7 @@ object Skeleton {
 
     df3.collect().foreach(println)
 
+    readLine()
     spark.stop()
 
   }
